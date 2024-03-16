@@ -1,0 +1,28 @@
+body {
+    margin: 5%;
+  }
+  
+  #title{
+    border-bottom: 1px solid #222;
+  }
+  
+  #title h1{
+    margin-bottom: 5%;
+  }
+  
+  .row:first-child {
+    margin-top: 5%;
+  }
+  
+  .action {
+    margin-top: 15px;
+  }
+  
+  .error {
+    padding: 10px;
+    border-radius: 5px;
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+    list-style: none;
+  }

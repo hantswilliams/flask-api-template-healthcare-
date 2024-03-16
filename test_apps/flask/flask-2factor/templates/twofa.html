@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Setup 2FA</title>
+</head>
+<body>
+    <h1>Setup 2-Factor Authentication</h1>
+    <p>Scan the QR code below with your Google Authenticator app.</p>
+    <img src="{{ url_for('static', filename='user_%s.png' % user_id) }}" alt="QR Code">
+    <p>After scanning, <a href="/login">click here to login</a>.</p>
+</body>
+</html>
