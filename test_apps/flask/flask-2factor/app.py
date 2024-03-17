@@ -1,5 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+
 import pyotp
 import pyqrcode
 import os
@@ -13,7 +15,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-class User(db.Model):
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
@@ -24,6 +29,10 @@ class User(db.Model):
         if self.otp_secret is None:
             # Generate a random secret for each new user
             self.otp_secret = base64.b32encode(os.urandom(10)).decode('utf-8')
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # Ensure the Flask application context is available before creating the database
 with app.app_context():
@@ -65,6 +74,7 @@ def login():
             if pyotp.TOTP(user.otp_secret).verify(token):
                 session['user_id'] = user.id
                 session['username'] = user.username
+                login_user(user)
                 return redirect(url_for('success'))
             else:
                 return 'Invalid token', 403
@@ -73,13 +83,15 @@ def login():
     return render_template('login.html')
 
 @app.route('/success')
+@login_required
 def success():
     print('Session: ', session)
     return render_template('success.html', user_id=session['user_id'], username=session['username'])
 
 @app.route('/logout')
+@login_required
 def logout():
-    session.pop('user_id', None)
+    logout_user()
     return redirect(url_for('index'))
 
 if __name__ == '__main__':

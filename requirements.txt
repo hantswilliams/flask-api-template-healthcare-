@@ -14,3 +14,5 @@ pyotp
 Flask-SQLAlchemy
 pyqrcode
 pypng ## to go along with pyotp and pyqrcode
+#### swagger 
+flask_restx
