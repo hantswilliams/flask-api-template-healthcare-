@@ -1,5 +1,9 @@
 # flask-api-template-healthcare 
 
+## tech debt 
+- need to deal with different versions of user creation, via the API vs the admin panel
+
+
 ## Opinionated Flask API Template for HIPAA-Hitrust Environments
 
 Or perhaps the other way of going about this, is writing some test scripts that check for these things?
@@ -32,7 +36,6 @@ Could look at this project as a good example: [full-stack-fastapi-template](http
         - Ensure that logs do not contain sensitive information such as PHI, passwords, or security tokens. Mask or obfuscate sensitive data in logs.
     - Create integrations for:
         - Sentry (might be the simplest cloud integration)
-        - Other options: New Relic
 - **Access Controls**
     - RBAC
     - ABAC
@@ -44,9 +47,11 @@ Could look at this project as a good example: [full-stack-fastapi-template](http
             - Time-based One-Time Passwords (TOTP) [PyOTP]
         - If non-interactive:
             - Application-Specific Tokens
+        - If web, can also think about OAuth
+            - https://flask-dance.readthedocs.io/en/latest/ 
     - Automated session timeout
         - `app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)  # session timeout`
-    - Account lockout policies (prevent brute force attacks)
+    - Account lockout policies (prevent brute force attacks) - done in flask-rbac-sessiontimeout
     - Password policy enforcement
     - Password Recovery
     - Secure Cookie Attributes

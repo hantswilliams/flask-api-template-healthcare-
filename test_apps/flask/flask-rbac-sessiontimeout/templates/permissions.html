@@ -9,7 +9,7 @@
 <body>
 
     <!-- logout button -->
-    <form action="/logout" method="post">
+    <form action="/logout" method="GET">
         <input type="submit" value="Logout">
     </form>
 
@@ -42,8 +42,28 @@
         <!-- View for existing permissions will be added here -->
     </ul>
 
+    <h2>Manage Users</h2>
+    <form action="/add-user" method="post">
+        Username: <input type="text" name="username" required><br>
+        Password: <input type="password" name="password" required><br>
+        <input type="submit" value="Add User">
+    </form>
+
+    <h3>Existing Users</h3>
+    <ul>
+        {% for user in users %}
+        <li>
+            {{ user.username }}
+            <form action="/delete-user/{{ user.id }}" method="post" style="display: inline;">
+                <button type="submit">Delete</button>
+            </form>
+            <button onclick="editUser('{{ user.id }}')">Edit Password</button>
+        </li>
+        {% endfor %}
+    </ul>
+
     <!-- logout button -->
-    <form action="/logout" method="post">
+    <form action="/logout" method="GET">
         <input type="submit" value="Logout">
     </form>
 
@@ -59,7 +79,7 @@
                     list.innerHTML = ''; // Clear existing list content
                     data.forEach(permission => {
                         const item = document.createElement('li');
-                        item.textContent = `Subject: ${permission.subject}, Object: ${permission.object}, Action: ${permission.action}`;
+                        item.textContent = `User ID: ${permission.user_id},  Subject: ${permission.subject}, Object: ${permission.object}, Action: ${permission.action}`;
     
                         const editButton = document.createElement('button');
                         editButton.textContent = 'Edit';
@@ -99,8 +119,8 @@
                 .catch(error => console.error('Error fetching subjects:', error));
         }
 
-// Call fetchSubjects on page load to populate the subjects dropdown
-document.addEventListener('DOMContentLoaded', fetchSubjects);
+        // Call fetchSubjects on page load to populate the subjects dropdown
+        document.addEventListener('DOMContentLoaded', fetchSubjects);
 
     
         // Function to edit a permission (assumes subject should not be editable based on requirements)
@@ -169,6 +189,29 @@ document.addEventListener('DOMContentLoaded', fetchSubjects);
     
         // Fetch and display existing permissions when the page loads
         document.addEventListener('DOMContentLoaded', fetchPermissions);
+
+
+        function editUser(userId) {
+            const newPassword = prompt("Enter new password for user:");
+            if (newPassword) {
+                // Assuming you have a hidden form for editing user passwords
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/edit-user/${userId}`;
+
+                const newPasswordInput = document.createElement('input');
+                newPasswordInput.type = 'hidden';
+                newPasswordInput.name = 'new_password';
+                newPasswordInput.value = newPassword;
+                
+                form.appendChild(newPasswordInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+
+
     </script>
     
 

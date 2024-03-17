@@ -1,4 +1,7 @@
-from models.models import User  # Adjust the import path as necessary
+from functools import wraps
+from flask import request
+from flask_login import current_user
+from models.models import db, User, UserActivityLog  # Import the User and UserActivityLog models
 import re
 
 # User loader
@@ -22,3 +25,21 @@ def validate_password(password):
         return False, "Password must contain at least one special character."
     
     return True, "Password is strong."
+
+
+def log_user_activity(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user.is_authenticated:
+            log = UserActivityLog(
+                user_id=current_user.id,
+                username=current_user.username,
+                endpoint=request.path,
+                method=request.method
+            )
+            db.session.add(log)
+            db.session.commit()
+        
+        return f(*args, **kwargs)
+    
+    return decorated_function

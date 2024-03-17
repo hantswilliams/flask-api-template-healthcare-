@@ -1,6 +1,6 @@
 import casbin
 from functools import wraps
-from flask import request, jsonify
+from flask import request, jsonify, g
 from flask_login import current_user
 from models.models import Permission
 
@@ -10,7 +10,12 @@ def casbin_rbac():
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            user = current_user.username  # Assuming current_user.id gives the unique identifier of the logged-in user
+            # Use the username from Flask's global `g` if available
+            user = getattr(g, 'username', None) or getattr(current_user, 'username', None)
+            
+            if not user:
+                return jsonify({"error": "Access denied. No valid user identified."}), 401
+            
             path = request.path
             methods = request.method if not hasattr(f, 'methods') else f.methods  # Gets the methods from the route or the current request
             
@@ -32,7 +37,7 @@ def casbin_rbac():
 
                 # If permission is not found for any method, deny access
                 if not permission_exists:
-                    return jsonify({"error": "You are logged in, but do not have access to this individual resource"}), 403
+                    return jsonify({"error": "You are either logged or provided your correct API token, but do not have access to this individual resource"}), 403
             
             # If all checks pass, call the original function
             return f(*args, **kwargs)
