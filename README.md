@@ -3,6 +3,10 @@
 ## tech debt 
 - need to deal with different versions of user creation, via the API vs the admin panel
 
+## DB selection 
+- need to see if PlanetScale can now handle not only potential hitrust/hipaa related, but also the integration with sqlalchemy
+    - https://planetscale.com/blog/using-mysql-with-sql-alchemy-hands-on-examples
+
 
 ## Opinionated Flask API Template for HIPAA-Hitrust Environments
 

@@ -5,7 +5,6 @@ casbin
 requests
 redis 
 python-dotenv
-#### related to flask2factor - is old and needs to change
 click
 itsdangerous
 jinja2
@@ -13,6 +12,5 @@ werkzeug
 pyotp
 Flask-SQLAlchemy
 pyqrcode
-pypng ## to go along with pyotp and pyqrcode
-#### swagger 
+pypng
 flask_restx

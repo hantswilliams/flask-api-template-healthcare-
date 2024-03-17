@@ -1,5 +1,14 @@
 # HIPAA / HITRUST items covered in this example app:
 
+## ENV file Structure 
+
+```
+REDIS_ENDPOINT = 
+SENTRY_DSN = 
+```
+
+## HIPAA / HITRUST items covered in this example app:
+
 1. RBAC - prevents unauthorized access to PHI
     - With simple dedicated GUI for admin to manage roles-permissions, and users 
 2. Session Timeout - prevents unauthorized access to PHI
@@ -24,7 +33,6 @@
 9. Rotating API tokens - prevents unauthorized access to PHI
     - Currently set to 7 days
     - The config is found in the DB model: `APIToken`
-
 
 ## Decesions 
 - API is stateless; requires token that is rotated every 7 days, and associated with a users role and permissions 

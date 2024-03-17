@@ -1,5 +1,9 @@
 import sentry_sdk
 from sentry.pii_phi import PiiRegex
+from dotenv import load_dotenv
+import os 
+
+load_dotenv()
 
 def before_send(event, hint):
     # Instantiate the PiiRegex object
@@ -31,7 +35,7 @@ def before_send(event, hint):
 
 def init_sentry():
     sentry_sdk.init(
-        dsn="https://7bf2944b4854d6bd649c1b3b9b6697d1@o4506689556185088.ingest.us.sentry.io/4506926909947904",
+        dsn=os.getenv('SENTRY_DSN'),
         before_send=before_send,
         traces_sample_rate=1.0,
         profiles_sample_rate=1.0,
