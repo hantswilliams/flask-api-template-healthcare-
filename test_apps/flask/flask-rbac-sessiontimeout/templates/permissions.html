@@ -8,6 +8,11 @@
 </head>
 <body>
 
+    <!-- logout button -->
+    <form action="/logout" method="post">
+        <input type="submit" value="Logout">
+    </form>
+
     <h2>Available Endpoints</h2>
     <ul id="endpoints-list">
         {% for route in routes %}
@@ -18,8 +23,17 @@
     <h2>Add New Permission</h2>
     <form id="add-permission-form">
         Subject: <select name="subject" id="subject-select"> </select><br>
-        Object: <input type="text" name="object"><br>
-        Action: <input type="text" name="action"><br>
+        Object: <select name="object">
+            {% for route in routes %}
+                <option value="{{route.endpoint }}">{{ route.endpoint }}</option>
+            {% endfor %}
+        </select><br>
+        Action: <select name="action">
+            <option value="GET">GET - Read</option>
+            <option value="POST">POST - Create</option>
+            <option value="PUT">PUT - Update</option>
+            <option value="DELETE">DELETE - Delete</option>
+        </select><br>
         <input type="submit" value="Add Permission">
     </form>
 
@@ -27,6 +41,11 @@
     <ul id="permissions-list">
         <!-- View for existing permissions will be added here -->
     </ul>
+
+    <!-- logout button -->
+    <form action="/logout" method="post">
+        <input type="submit" value="Logout">
+    </form>
 
     <script>
         // Function to fetch and display permissions

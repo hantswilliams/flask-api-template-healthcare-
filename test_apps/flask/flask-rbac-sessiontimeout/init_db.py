@@ -1,18 +1,16 @@
 from app import app  # Import the Flask application instance
 from models.models import db, Permission, User  # Import db, Permission, and User models
+from werkzeug.security import generate_password_hash
 
 # Permissions to add
 permissions_to_add = [
     ("alice", "/data", "GET"),
+    ("alice", "/manage-permissions", "GET"),
+    ("alice", "/manage-permissions", "POST"),
+    ("alice", "/manage-permissions", "PUT"),
+    ("alice", "/manage-permissions", "DELETE"),
     ("janet", "/data", "GET"),
-    ("john", "/data", "GET"),
-    {"hants", "/data", "GET"},
-    {"hants", "/profile", "GET"},
-    {"hants", "/manage-permissions", "GET"},
-    {"hants", "/manage-permissions", "POST"},
-    {"hants", "/manage-permissions", "PUT"},
-    {"hants", "/manage-permissions", "DELETE"},
-]
+    ("john", "/data", "GET")]
 
 # Users to add
 users_to_add = [
@@ -27,10 +25,13 @@ def add_data():
     with app.app_context():
         db.create_all()  # Ensure all tables are created
 
-        # Add users
+        # Add users with hashed passwords
         for user_info in users_to_add:
-            if not User.query.filter_by(username=user_info["username"]).first():  # Check if user already exists
-                new_user = User(username=user_info["username"], password=user_info["password"])
+            username = user_info["username"]
+            password = user_info["password"]
+            if not User.query.filter_by(username=username).first():  # Check if user already exists
+                hashed_password = generate_password_hash(password)  # Hash the password
+                new_user = User(username=username, password=hashed_password)
                 db.session.add(new_user)
 
         # Add permissions

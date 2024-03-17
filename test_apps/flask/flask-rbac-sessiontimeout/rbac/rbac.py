@@ -5,7 +5,6 @@ from flask_login import current_user
 from models.models import Permission
 
 # Casbin setup
-e = casbin.Enforcer("rbac/model.conf", "rbac/policy.csv")
 
 def casbin_rbac():
     def decorator(f):

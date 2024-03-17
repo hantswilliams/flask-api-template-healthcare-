@@ -1,13 +1,14 @@
 from flask import Flask, jsonify, request, redirect, render_template_string, render_template
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from rbac.rbac import casbin_rbac
-from auth.auth import User, load_user  # Import from your auth module
+from werkzeug.security import generate_password_hash, check_password_hash
+from auth.auth import User, load_user, validate_password  # Import from your auth module
 from datetime import timedelta
 from models.models import db, Permission
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret-key' # for session management
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)  # session timeout
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)  # session timeout set to 1 minute of inactivity
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db' # Example using SQLite
 
 db.init_app(app)
@@ -28,11 +29,13 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = User.query.filter_by(username=username, password=password).first()  # Adjust as needed for password hashing
-        if user:
+        user = User.query.filter_by(username=username).first()  # Find the user by username
+        if user and check_password_hash(user.password, password):  # Verify the password
             login_user(user)
-            return redirect('/data')
-        return 'Invalid username or password'
+            return redirect('/data')  # Redirect to a secure page after login
+        else:
+            # The user might not exist or password is incorrect
+            return 'Invalid username or password'
     return render_template_string('''
         <form method="post">
             Username: <input type="text" name="username"><br>
@@ -40,6 +43,39 @@ def login():
             <input type="submit" value="Login">
         </form>
     ''')
+
+@app.route('/register', methods=['GET', 'POST'])  # Assuming you have a registration route
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        # Validate the password
+        valid, message = validate_password(password)
+        if not valid:
+            return render_template_string('''
+                <p>{{message}}</p>
+                <form method="post">
+                    Username: <input type="text" name="username"><br>
+                    Password: <input type="password" name="password"><br>
+                    <input type="submit" value="Register">
+                </form>
+            ''', message=message)
+        
+        # Continue with user creation if the password is valid
+        # Remember to hash the password before storing it
+        user = User(username=username, password=generate_password_hash(password))
+        db.session.add(user)
+        db.session.commit()
+        return redirect('/login')
+    return render_template_string('''
+        <form method="post">
+            Username: <input type="text" name="username"><br>
+            Password: <input type="password" name="password"><br>
+            <input type="submit" value="Register">
+        </form>
+    ''')
+
 
 @app.route('/logout')
 @login_required
@@ -71,7 +107,7 @@ def permissions_view():
         # Skip the static endpoint provided by Flask
         if rule.endpoint != 'static':
             routes.append({
-                "endpoint": rule.endpoint,
+                "endpoint": "/" + rule.endpoint,
                 "methods": list(rule.methods - set(['HEAD', 'OPTIONS']))
             })
 
