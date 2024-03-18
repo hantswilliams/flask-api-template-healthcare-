@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, redirect, render_template_string, render_template, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from rbac.rbac import casbin_rbac
-from flask_restx import Resource, Namespace
+from flask_restx import Resource
 from api_documentation.docs import flask_api_docs
 from werkzeug.security import generate_password_hash, check_password_hash
 from auth.auth import User, load_user, validate_password, log_user_activity  
@@ -417,24 +417,24 @@ def slow():
 
 
 
-# @app.route('/redoc')
-# def redoc():
-#     return '''
-#     <!DOCTYPE html>
-#     <html>
-#       <head>
-#         <title>ReDoc</title>
-#         <!-- Redoc's latest version CDN -->
-#         <script src="https://cdn.jsdelivr.net/npm/redoc/bundles/redoc.standalone.js"></script>
-#       </head>
-#       <body>
-#         <redoc spec-url='/api/swagger.json'></redoc>
-#         <script>
-#           Redoc.init('/api/swagger.json')
-#         </script>
-#       </body>
-#     </html>
-#     '''
+@app.route('/redoc')
+def redoc():
+    return '''
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>ReDoc</title>
+        <!-- Redoc's latest version CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/redoc/bundles/redoc.standalone.js"></script>
+      </head>
+      <body>
+        <redoc spec-url='/api/swagger.json'></redoc>
+        <script>
+          Redoc.init('/api/swagger.json')
+        </script>
+      </body>
+    </html>
+    '''
 
 ## name space test 
 ns_data_test = api_docs.namespace('data', description='Hello operations')
