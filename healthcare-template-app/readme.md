@@ -42,6 +42,9 @@ SENTRY_DSN =
 11. Rotating API tokens - prevents unauthorized access to PHI
     - Currently set to 7 days
     - The config is found in the DB model: `APIToken`
+12. API limiting 
+    - Each end up currently has a set limit of 1 request per second
+    - Can individually set limits for each endpoint
 
 ## Decesions 
 - API is stateless; requires token that is rotated every 7 days, and associated with a users role and permissions 

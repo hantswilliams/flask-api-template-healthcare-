@@ -1,10 +1,13 @@
 from flask import Flask, jsonify, request, redirect, render_template_string, render_template, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from rbac.rbac import casbin_rbac
+from flask_restx import Resource, Namespace
+from api_documentation.docs import flask_api_docs
 from werkzeug.security import generate_password_hash, check_password_hash
 from auth.auth import User, load_user, validate_password, log_user_activity  
 from auth.auth_audit import update_login_audit_info
 from auth.tokens import token_required
+from rate_limiting.rate_limiter import rate_limits_app
 from datetime import datetime, timedelta
 from models.models import db, Permission, APIToken
 from sentry.sentry import init_sentry
@@ -29,6 +32,12 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=12) # Set the session
 
 # Initialize Sentry
 init_sentry()
+
+# Intialize API documentation
+api_docs = flask_api_docs(app)
+
+# Initialize rate limiting
+limiter = rate_limits_app(app)
 
 db.init_app(app)
 
@@ -279,12 +288,14 @@ def permissions_view():
 
     # Generate a list of all available endpoints
     routes = []
-    for rule in app.url_map.iter_rules():
-        # Skip the static endpoint provided by Flask
-        if rule.endpoint != 'static':
+
+    for i in app.url_map.iter_rules():
+        if i.endpoint != 'static': # Skip the static endpoint provided by Flask
+            endpoint_value = str(i).replace('<', '{').replace('>', '}')
+            endpoint_value = endpoint_value.split('{')[0]
             routes.append({
-                "endpoint": "/" + rule.endpoint,
-                "methods": list(rule.methods - set(['HEAD', 'OPTIONS']))
+                "endpoint": endpoint_value,
+                "methods": list(i.methods - set(['HEAD', 'OPTIONS']))
             })
 
     return render_template('permissions.html', permissions=permissions, users=users, routes=routes)
@@ -292,6 +303,7 @@ def permissions_view():
 @app.route('/permissions', methods=['POST', 'GET'])
 @login_required
 @log_user_activity
+@limiter.exempt # this route is exempt from the default limits
 def manage_permissions():
     if request.method == 'POST':
         data = request.get_json()
@@ -319,6 +331,7 @@ def get_subjects():
 
 @app.route('/permissions/<int:permission_id>', methods=['PUT', 'DELETE'])
 @login_required
+
 def modify_permission(permission_id):
     permission = Permission.query.get_or_404(permission_id)
     if request.method == 'PUT':
@@ -382,16 +395,59 @@ def delete_user(user_id):
 
 # create error check page for sentry
 @app.route('/error')
+@login_required
+@casbin_rbac()
+@limiter.exempt # this route is exempt from the default limits
 def error():
     division_by_zero = 1 / 0
     return division_by_zero
 
 # create a error that includes PII or PHI for sentry, that the pre-send filter will catch
 @app.route('/error-PII')
+@limiter.exempt # this route is exempt from the default limits
 def error_PII():
     division_by_zero = "My social security number is 123-45-6789" / 0
     return division_by_zero 
 
+# rate limit example of one per day
+@app.route('/error/slow')
+@limiter.limit("1 per day")
+def slow():
+    return "slow return - one per day"
+
+
+
+# @app.route('/redoc')
+# def redoc():
+#     return '''
+#     <!DOCTYPE html>
+#     <html>
+#       <head>
+#         <title>ReDoc</title>
+#         <!-- Redoc's latest version CDN -->
+#         <script src="https://cdn.jsdelivr.net/npm/redoc/bundles/redoc.standalone.js"></script>
+#       </head>
+#       <body>
+#         <redoc spec-url='/api/swagger.json'></redoc>
+#         <script>
+#           Redoc.init('/api/swagger.json')
+#         </script>
+#       </body>
+#     </html>
+#     '''
+
+## name space test 
+ns_data_test = api_docs.namespace('data', description='Hello operations')
+@ns_data_test.route('/test')
+class DataTest(Resource):
+    @casbin_rbac()
+    @log_user_activity
+    @limiter.limit("1 per second")
+    def get(self):
+        return {'hello': 'world'}
+
+
+
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5005)

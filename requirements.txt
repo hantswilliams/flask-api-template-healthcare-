@@ -1,9 +1,9 @@
 Flask 
 Flask-Login 
-pandas 
+Flask-Limiter
+redis 
 casbin
 requests
-redis 
 python-dotenv
 click
 itsdangerous
