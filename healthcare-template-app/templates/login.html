@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+    <p>You have {{ remaining_attempts }} remaining login attempts.</p>
+    <form method="post">
+        Username: <input type="text" name="username"><br>
+        Password: <input type="password" name="password"><br>
+        Token: <input type="text" name="token"><br>
+        <input type="submit" value="Login">
+    </form>
+    <p>If you need to register or re-register 2FA with your account, please click <a href="/register/admin/2fa/setup">here</a>.</p>
+</body>
+</html>

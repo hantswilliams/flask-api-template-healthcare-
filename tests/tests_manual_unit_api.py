@@ -2,8 +2,8 @@ import requests
 
 # Testing token endpoint: /api-token-test
 # requires a header of X-API-Token with the token value
-token = 'CZuTDhqaK-h_s1ICg1qukShqC0ahIwymXPU9Wu6V4rk'
-token_response = requests.get('http://127.0.0.1:5000/api-token-test', headers={'X-API-Token': token})
+token = 'DMhdrh32NEWZELmei9oXlEgp1u10ErJdDr6kVLK6Hv8'
+token_response = requests.get('http://localhost:5005/api/data/test', headers={'X-API-Token': token})
 print(token_response.text)
 
 

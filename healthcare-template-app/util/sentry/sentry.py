@@ -1,5 +1,5 @@
 import sentry_sdk
-from sentry.pii_phi import PiiRegex
+from util.sentry.pii_phi import PiiRegex
 from dotenv import load_dotenv
 import os 
 

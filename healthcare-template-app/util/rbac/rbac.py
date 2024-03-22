@@ -1,17 +1,17 @@
-import casbin
 from functools import wraps
-from flask import request, jsonify, g
+from flask import request, g, current_app
 from flask_login import current_user
 from models.models import Permission
 from werkzeug.exceptions import Unauthorized, Forbidden
 
-
-def casbin_rbac():
+def rbac():
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             # Use the username from Flask's global `g` if available
             user = getattr(g, 'username', None) or getattr(current_user, 'username', None)
+
+            current_app.logger.debug(f'Current user found via RBAC decorator: {user}')
             
             if not user:
                 raise Unauthorized("Access denied. No valid user identified.")

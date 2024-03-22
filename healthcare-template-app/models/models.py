@@ -6,6 +6,10 @@ import secrets
 import base64
 import os
 
+
+## get token expiration time from environment variable
+# TOKEN_EXPIRATION_TIME = os.getenv('TOKEN_EXPIRATION_TIME')
+
 db = SQLAlchemy()
 
 class User(db.Model, UserMixin):

@@ -1,78 +1,62 @@
-from flask import Flask, jsonify, request, redirect, render_template_string, render_template, url_for
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from rbac.rbac import casbin_rbac
-from flask_restx import Resource
-from api_documentation.docs import flask_api_docs
-from werkzeug.security import generate_password_hash, check_password_hash
-from auth.auth import User, load_user, validate_password, log_user_activity  
-from auth.auth_audit import update_login_audit_info
-from auth.tokens import token_required
-from rate_limiting.rate_limiter import rate_limits_app
+from api import api
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+from flask import Flask, jsonify, request, redirect, render_template_string, render_template, url_for, session, current_app
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+import logging
 from models.models import db, Permission, APIToken
-from sentry.sentry import init_sentry
 import pyotp
 import pyqrcode
+from util.auth.auth import User, load_user, validate_password, log_user_activity, renew_session  
+from util.auth.auth_audit import update_login_audit_info
+from util.config.loader import init_configs
+from util.data_access.permissions import get_user_permissions
+from util.rbac.rbac import rbac
+from util.rate_limiting.rate_limiter import init_app as init_limiter, limiter
+from util.sentry.sentry import init_sentry
+from werkzeug.security import generate_password_hash, check_password_hash
 
+load_dotenv()
 
+## Initialize the Flask app
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'secret-key' # for session management
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)  # session timeout set to 1 minute of inactivity
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db' # Example using SQLite
+## Keep debugging on
+app.logger.setLevel(logging.DEBUG)  # Set the desired logging level
 
-# Session cookie settings
-app.config['SESSION_COOKIE_SECURE'] = False # Set to True for HTTPS
-app.config['SESSION_COOKIE_HTTPONLY'] = True # Mitigates XSS attacks
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax' # Mitigates CSRF attackss
-
-# Remember cookie settings for Flask-Login
-app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7) # Set the remember cookie to 7 days
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=12) # Set the session lifetime to 12 hours
-
-# Initialize Sentry
+# Initialize configurations, Sentry, Rate limting, API routes, database, flask-login
+init_configs(app)
 init_sentry()
-
-# Intialize API documentation
-api_docs = flask_api_docs(app)
-
-# Initialize rate limiting
-limiter = rate_limits_app(app)
-
+init_limiter(app)
+api.init_app(app)
 db.init_app(app)
 
 # Flask-Login setup
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.user_loader(load_user) ## loads fake users from local storage
+login_manager.user_loader(load_user) 
 
+@app.before_request
+def before_request_func():
+    renew_session()
+
+# Non-API Routes for the Flask app
+## Home Route 
 @app.route('/')
 def index():
-    return render_template_string('''
-        <H4> Welcome to the Opionated Healthcare Flask Demo / Template App </H4>
-        <p> This is a simple Flask app that demonstrates how to implement basic security measures that should always be considered when building a healthcare application. </p>
-        <a href="/login">Login</a><br>
-        <a href="/register">Register</a><br>
-    ''')
+    return render_template('index.html')
 
-@app.route('/register', methods=['GET', 'POST'])  # Assuming you have a registration route
+## Register route
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
         # Validate the password
         valid, message = validate_password(password)
         if not valid:
-            return render_template_string('''
-                <p>{{message}}</p>
-                <form method="post">
-                    Username: <input type="text" name="username"><br>
-                    Password: <input type="password" name="password"><br>
-                    <input type="submit" value="Register">
-                </form>
-            ''', message=message)
-        
+            return render_template('registration.html', message=message, username=username)
+
         # Continue with user creation if the password is valid
         # Remember to hash the password before storing it
         user = User(username=username, password=generate_password_hash(password))
@@ -84,14 +68,9 @@ def register():
         APIToken.create_token(user.id, user.username)
 
         return redirect(url_for('twofa', user_id=user.id))
-    return render_template_string('''
-        <form method="post">
-            Username: <input type="text" name="username"><br>
-            Password: <input type="password" name="password"><br>
-            <input type="submit" value="Register">
-        </form>
-    ''')
+    return render_template('registration.html')
 
+## 2FA setup route for new user 
 @app.route('/register/twofa/<int:user_id>')
 def twofa(user_id):
     user = User.query.get(user_id)
@@ -102,6 +81,7 @@ def twofa(user_id):
     qr_code.png('static/user_{}.png'.format(user_id), scale=5)
     return render_template('twofa.html', user_id=user_id)
 
+## 2FA setup route for admin or existing user, reset 2FA
 @app.route('/register/admin/2fa/setup', methods=['GET', 'POST'])
 def admin_2fa_setup():
     if request.method == 'POST':
@@ -119,7 +99,7 @@ def admin_2fa_setup():
             return render_template('twofa.html', user_id=user.id)
     return render_template('twofa_admin.html')
 
-# Login route
+## Login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     remaining_attempts = 5  # Default remaining attempts if the user or request.method is not POST
@@ -159,7 +139,8 @@ def login():
                 user.failed_login_attempts = 0  # Reset failed login attempts
                 db.session.commit()
                 login_user(user)
-                return redirect('/data')  # Redirect to a secure page after login
+
+                return redirect('/profile')  # Redirect to a secure page after login
             
             else:
                 return 'Invalid 2FA token', 403
@@ -188,7 +169,9 @@ def login():
     ''', invalid_login_message=invalid_login_message if 'invalid_login_message' in locals() else '', remaining_attempts=remaining_attempts)
 
 
+## Change password route
 @app.route('/change_password', methods=['GET', 'POST'])
+@login_required
 @log_user_activity
 def change_password():
     if request.method == 'POST':
@@ -228,6 +211,7 @@ def change_password():
         </form>
     ''')
 
+## Retrieve logged in user API token route
 @app.route('/api-token')
 @login_required
 def my_api_token():
@@ -236,12 +220,7 @@ def my_api_token():
         return jsonify({'token': user_token.token, 'last_updated': user_token.last_updated})
     return jsonify({'message': 'No API token found. Please generate one.'})
 
-@app.route('/api-token-test', methods=['GET'])
-@token_required
-@casbin_rbac()
-def api_token_test():
-    return jsonify({'message': 'You are authorized to access this endpoint.'})
-
+## Generate API token route
 @app.route('/api-token-generate', methods=['GET'])
 @login_required
 def generate_api_token():
@@ -258,30 +237,37 @@ def generate_api_token():
     db.session.commit()
     return redirect('/api-token')
 
+## Logout route
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
     logout_user()
     return redirect('/')
 
+## Profile route
 @app.route('/profile')
 @login_required
 @log_user_activity
-@casbin_rbac()
 def profile():
-    return jsonify({"userid": current_user.id, "username": current_user.username})
+    ## get permissions
+    user_permissions = get_user_permissions(current_user.id)
+    ## get user token
+    user_token = APIToken.query.filter_by(username=current_user.username).first()
+    if user_token:
+        user_token = user_token.token
+    else:
+        user_token = "No token found"
+    return render_template('profile.html',
+                           username=current_user.username,
+                           userid=current_user.id,
+                           user_permissions=user_permissions,
+                           user_token=user_token)
 
-@app.route('/data', methods=['GET'])
-@login_required
-@log_user_activity
-@casbin_rbac()
-def data():
-    return jsonify({"data": "This is protected data."}) 
-
+## ADMIN route for managing RBAC permissions, creating new users, deleting users, resetting passwords
 @app.route('/manage-permissions')
 @login_required
 @log_user_activity
-@casbin_rbac()
+@rbac()
 def permissions_view():
     permissions = Permission.query.all()
     users = User.query.all()
@@ -300,6 +286,8 @@ def permissions_view():
 
     return render_template('permissions.html', permissions=permissions, users=users, routes=routes)
 
+
+## TO UPDATE: this route below should probably move over to the api folder and be part of a name space
 @app.route('/permissions', methods=['POST', 'GET'])
 @login_required
 @log_user_activity
@@ -323,17 +311,27 @@ def manage_permissions():
         permissions_list = [{"id": p.id, "user_id": p.user_id, "subject": p.subject, "object": p.object, "action": p.action} for p in permissions]
         return jsonify(permissions_list), 200
     
+## TO update: get a individual users list of permissions, should also move to a namespace in the api folder
+@app.route('/permissions/<int:user_id>', methods=['GET'])
+@login_required
+def user_permission(user_id):
+    permissions = get_user_permissions(user_id)
+    return jsonify(permissions), 200
+
+
+## TO UPDATE: list of users , should also move to a namespace in the api folder
 @app.route('/subjects')
 @login_required
 def get_subjects():
     subjects = [user.username for user in User.query.all()]
     return jsonify(subjects), 200
 
+## TO UPDATE: to update permissions, should also move to a namespace in the api folder
 @app.route('/permissions/<int:permission_id>', methods=['PUT', 'DELETE'])
 @login_required
-
 def modify_permission(permission_id):
     permission = Permission.query.get_or_404(permission_id)
+
     if request.method == 'PUT':
         # Update existing Permission
         data = request.get_json()
@@ -350,7 +348,7 @@ def modify_permission(permission_id):
         db.session.commit()
         return jsonify({"message": "Permission deleted"}), 200
 
-# Add a new user
+## TO UPDATE: add users, should also move to a namespace in the api folder
 @app.route('/add-user', methods=['POST'])
 @login_required
 def add_user():
@@ -372,9 +370,9 @@ def add_user():
     new_user = User.query.filter_by(username=username).first()
     ## then create the token
     APIToken.create_token(new_user.id, new_user.username)
-
     return redirect(url_for('permissions_view'))
 
+## TO UPDATE: edit users, should also move to a namespace in the api folder
 @app.route('/edit-user/<int:user_id>', methods=['POST'])
 @login_required
 def edit_user(user_id):
@@ -385,6 +383,7 @@ def edit_user(user_id):
     db.session.commit()
     return redirect(url_for('permissions_view'))
 
+## TO UPDATE: delete users, should also move to a namespace in the api folder
 @app.route('/delete-user/<int:user_id>', methods=['POST'])
 @login_required
 def delete_user(user_id):
@@ -393,30 +392,7 @@ def delete_user(user_id):
     db.session.commit()
     return redirect(url_for('permissions_view'))
 
-# create error check page for sentry
-@app.route('/error')
-@login_required
-@casbin_rbac()
-@limiter.exempt # this route is exempt from the default limits
-def error():
-    division_by_zero = 1 / 0
-    return division_by_zero
-
-# create a error that includes PII or PHI for sentry, that the pre-send filter will catch
-@app.route('/error-PII')
-@limiter.exempt # this route is exempt from the default limits
-def error_PII():
-    division_by_zero = "My social security number is 123-45-6789" / 0
-    return division_by_zero 
-
-# rate limit example of one per day
-@app.route('/error/slow')
-@limiter.limit("1 per day")
-def slow():
-    return "slow return - one per day"
-
-
-
+## Documentation page in REDOC style, the other page can be found at /swagger
 @app.route('/redoc')
 def redoc():
     return '''
@@ -436,15 +412,51 @@ def redoc():
     </html>
     '''
 
-## name space test 
-ns_data_test = api_docs.namespace('data', description='Hello operations')
-@ns_data_test.route('/test')
-class DataTest(Resource):
-    @casbin_rbac()
-    @log_user_activity
-    @limiter.limit("1 per second")
-    def get(self):
-        return {'hello': 'world'}
+
+
+##################### TESTING ROUTES #####################
+##################### TESTING ROUTES #####################
+
+@app.route('/session-time-left')
+@login_required
+@limiter.exempt # this route is exempt from the default limits
+def session_time_left():
+    if 'expires_at' in session:
+        expires_at = datetime.fromtimestamp(session['expires_at'])
+        time_left = expires_at - datetime.now()
+        return jsonify({'time_left': time_left.total_seconds()})
+    else:
+        return jsonify({'error': 'Session does not exist or has expired'}), 400
+
+# create error check page for sentry
+@app.route('/error')
+@login_required
+@rbac()
+@limiter.exempt # this route is exempt from the default limits
+def error():
+    division_by_zero = 1 / 0
+    return division_by_zero
+
+# create a error that includes PII or PHI for sentry, that the pre-send filter will catch
+@app.route('/error-PII')
+@limiter.exempt # this route is exempt from the default limits
+def error_PII():
+    division_by_zero = "My social security number is 123-45-6789" / 0
+    return division_by_zero 
+
+# rate limit example of one per day
+@app.route('/error/slow')
+@limiter.limit("1 per day")
+def slow():
+    return "slow return - one per day"
+
+## Data route for TESTING purposes of log, user activity, and role based access control
+@app.route('/data', methods=['GET'])
+@login_required
+@log_user_activity
+@rbac()
+def data():
+    return jsonify({"data": "This is protected data."}) 
 
 
 

@@ -1,0 +1,65 @@
+<!-- templates/profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+</head>
+<body>
+    <p>Username: {{ username }}</p>
+    <p>User ID: {{ userid }}</p>
+    {% if user_permissions %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Subject</th>
+                    <th>Object</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for permission in user_permissions %}
+                    <tr>
+                        <td>{{ permission.id }}</td>
+                        <td>{{ permission.subject }}</td>
+                        <td>{{ permission.object }}</td>
+                        <td>{{ permission.action }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>        
+    {% endif %}
+    <br />
+    <a href="/manage-permissions">Manage Permissions</a><br>
+    <a href="/swagger">API Documentation: Swagger</a><br>
+    <a href="/redoc">API Documentation: ReDoc</a><br>
+    <a href="/register/admin/2fa/setup">Update 2FA</a><br>
+    <a href="/change_password">Change Password</a><br>
+    <a href="/api-token">View Your API Token</a><br>
+    <a href="#" onclick="testApiToken();">Test your token</a><br>
+    <a href="/logout">Logout</a><br>
+    <script>
+    function testApiToken() {
+        var token = "{{ user_token }}";
+        fetch('/api-token-test', {
+            method: 'GET',
+            headers: {'X-API-Token': token}
+        })
+        .then(response => {
+            if(response.ok) {
+                return response.text();
+            }
+            throw new Error('Request failed.');
+        })
+        .then(data => {
+            console.log(data);
+            alert('Token test successful. Check console for response.');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    </script>
+</body>
+</html>

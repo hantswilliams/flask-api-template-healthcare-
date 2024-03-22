@@ -8,13 +8,15 @@ def generate_secure_token():
 
 # Permissions to add
 permissions_to_add = [
-    ("alice", "/data", "GET"),
-    ("alice", "/manage-permissions", "GET"),
-    ("alice", "/manage-permissions", "POST"),
-    ("alice", "/manage-permissions", "PUT"),
-    ("alice", "/manage-permissions", "DELETE"),
-    ("alice", "/api-token-test", "GET"),
-    ("john", "/data", "GET")]
+    ("alice", "/manage-permissions", "GET"), # required for the admin to manage permissions
+    ("alice", "/manage-permissions", "POST"), # required for the admin to manage permissions
+    ("alice", "/manage-permissions", "PUT"), # required for the admin to manage permissions
+    ("alice", "/manage-permissions", "DELETE"), # required for the admin to manage permissions
+    {"alice", "/permissions", "GET"}, # required /manage-permissions dependency for the admin to manage permissions
+    {"alice", "/permissions", "POST"}, # required /manage-permissions dependency for the admin to manage permissions
+    {"alice", "/permissions", "PUT"}, # required /manage-permissions dependency for the admin to manage permissions
+    {"alice", "/permissions", "DELETE"} # required /manage-permissions dependency for the admin to manage permissions
+    ]
 
 # Users to add
 users_to_add = [
