@@ -1,14 +1,13 @@
 from api import api
 from dotenv import load_dotenv
-from flask import Flask, jsonify
-from flask_login import LoginManager, login_required 
+from flask import Flask
+from flask_login import LoginManager 
 import logging
 from models.models import db
 from pages import register_blueprints  # Import the register_blueprints function
-from util.auth.auth import load_user, log_user_activity, renew_session  
+from util.auth.auth import load_user, renew_session  
 from util.config.loader import init_configs
-from util.rbac.rbac import rbac
-from util.rate_limiting.rate_limiter import init_app as init_limiter, limiter
+from util.rate_limiting.rate_limiter import init_app as init_limiter
 from util.sentry.sentry import init_sentry
 
 load_dotenv()
