@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, current_app as app
 from flask_login import login_required
 from models.models import Permission, User
 from util.auth.auth import log_user_activity 
-# from util.rbac.rbac import rbac
+from util.rbac.rbac import rbac
 
 # Create a Blueprint
 permission_pages = Blueprint('permission_pages', __name__)
@@ -11,6 +11,7 @@ permission_pages = Blueprint('permission_pages', __name__)
 @permission_pages.route('/')
 @login_required
 @log_user_activity
+@rbac()
 def permissions_view():
     permissions = Permission.query.all()
     users = User.query.all()

@@ -1,45 +1,78 @@
-<!-- templates/profile.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User Profile</title>
-</head>
-<body>
-    <p>Username: {{ username }}</p>
-    <p>User ID: {{ userid }}</p>
-    {% if user_permissions %}
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Subject</th>
-                    <th>Object</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for permission in user_permissions %}
-                    <tr>
-                        <td>{{ permission.id }}</td>
-                        <td>{{ permission.subject }}</td>
-                        <td>{{ permission.object }}</td>
-                        <td>{{ permission.action }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>        
-    {% endif %}
-    <br />
-    <a href="/manage-permissions">Manage Permissions</a><br>
-    <a href="/swagger">API Documentation: Swagger</a><br>
-    <a href="/redoc">API Documentation: ReDoc</a><br>
-    <a href="/register/admin/2fa/setup">Update 2FA</a><br>
-    <a href="/change_password">Change Password</a><br>
-    <a href="/api-token">View Your API Token</a><br>
-    <a href="/session-time">Session Time</a><br>
-    <a href="/logout">Logout</a><br>
-    <script>
-    </script>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}
+    Welcome
+{% endblock %}
+
+{% block content %}
+
+    <div class="container mx-auto p-8">
+        <div class="bg-white p-5 rounded shadow-sm">
+            <h2 class="font-bold text-xl mb-4">User Profile</h2>
+            <p>Username: <span class="text-gray-700">{{ username }}</span></p>
+            <p>User ID: <span class="text-gray-700">{{ userid }}</span></p>
+        </div>
+        {% if user_permissions %}
+            <div class="mt-8">
+                <div class="bg-white p-5 rounded shadow-sm">
+                    <h3 class="font-bold text-xl mb-4">Permissions</h3>
+                    <table class="min-w-full leading-normal">
+                        <thead>
+                            <tr>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    ID
+                                </th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Subject
+                                </th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Object
+                                </th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for permission in user_permissions %}
+                                <tr>
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap">{{ permission.id }}</p>
+                                    </td>
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap">{{ permission.subject }}</p>
+                                    </td>
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap">{{ permission.object }}</p>
+                                    </td>
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap">{{ permission.action }}</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+        <div class="mt-8">
+            <div class="bg-white p-5 rounded shadow-sm">
+                <h3 class="font-bold text-xl mb-4">Quick Links</h3>
+                <div class="space-y-2">
+                    <a href="/profile" class="text-blue-500 hover:text-blue-700">User Profile</a><br>
+                    <a href="/manage-permissions" class="text-blue-500 hover:text-blue-700">Manage Permissions</a><br>
+                    <a href="/swagger" class="text-blue-500 hover:text-blue-700">API Documentation: Swagger</a><br>
+                    <a href="/redoc" class="text-blue-500 hover:text-blue-700">API Documentation: ReDoc</a><br>
+                    <a href="/register/admin/2fa/setup" class="text-blue-500 hover:text-blue-700">Update 2FA</a><br>
+                    <a href="/change_password" class="text-blue-500 hover:text-blue-700">Change Password</a><br>
+                    <a href="/api-token" class="text-blue-500 hover:text-blue-700">View or Reset Your API Token</a><br>
+                    <a href="/session-time" class="text-blue-500 hover:text-blue-700">Session Time</a><br>
+                    <a href="/logout" class="text-blue-500 hover:text-blue-700">Logout</a><br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+

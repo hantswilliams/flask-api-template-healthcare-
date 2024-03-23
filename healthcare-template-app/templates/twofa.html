@@ -1,14 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Setup 2FA</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Setup 2-Factor Authentication</h1>
-    <h1> QR Code</h1>
-    <p>Scan the QR code below with your Google Authenticator app.</p>
-    <img src="{{ url_for('static', filename='user_%s.png' % user_id) }}" alt="QR Code">
-    <p>After scanning, <a href="/login">click here to login</a>.</p>
-
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen">
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 text-center max-w-2xl mx-auto">
+        <h1 class="text-xl font-bold mb-4">Setup 2-Factor Authentication</h1>
+        <h2 class="text-lg font-semibold mb-2">QR Code</h2>
+        <p class="mb-4">If you don't have the google authenticator app, you can download 
+            it from the <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" class="text-blue-500 hover:text-blue-700">Google Play Store</a> or the <a href="https://apps.apple.com/us/app/google-authenticator/id388497605" class="text-blue-500 hover:text-blue-700">Apple App Store</a>.
+            Once the app is downloaded to your mobile device, up it up and hit the + or add 
+            button to then scan the QR code below with your Google Authenticator app 
+            and add it.</p>
+        <img src="{{ url_for('static', filename='user_%s.png' % user_id) }}" alt="QR Code" class="mx-auto mb-4">
+        <p>After scanning, <a href="/login" class="text-blue-500 hover:text-blue-700">click here to login</a>.</p>
+    </div>
 </body>
 </html>

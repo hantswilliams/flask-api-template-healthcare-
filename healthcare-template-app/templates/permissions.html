@@ -1,101 +1,156 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Manage Permissions
+    Welcome
 {% endblock %}
 
 {% block content %}
 
     <div class="container mx-auto px-4 py-8">
 
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold">Available Endpoints</h2>
-            <ul class="list-disc pl-5 mt-3">
-                {% for route in routes %}
-                <li>{{ route.endpoint }}: {{ route.methods | join(", ") }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold">Add New Permission</h2>
-            <form id="add-permission-form" class="mt-3">
-                <div class="mb-3">
-                    Subject: <select name="subject" id="subject-select" class="border-gray-300 rounded-md shadow-sm"></select>
+        <div class="container mx-auto p-8">
+            <div class="bg-white p-5 rounded shadow-sm">
+                <h2 class="text-2xl font-bold mb-4">Available Endpoints and Methods</h2>
+                <div class="overflow-x-auto mt-3">
+                    <!-- Dedicated scrolling container for the table -->
+                    <div class="overflow-y-auto" style="max-height: 400px;">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Endpoint
+                                    </th>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Methods
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white">
+                                {% for route in routes %}
+                                <tr>
+                                    <td class="px-2 py-2 border-b border-gray-200 text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap">{{ route.endpoint }}</p>
+                                    </td>
+                                    <td class="px-2 py-2 border-b border-gray-200 text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap">{{ route.methods | join(", ") }}</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    Object: <select name="object" class="border-gray-300 rounded-md shadow-sm">
-                        {% for route in routes %}
-                        <option value="{{ route.endpoint }}">{{ route.endpoint }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="mb-3">
-                    Action: <select name="action" class="border-gray-300 rounded-md shadow-sm">
-                        <option value="GET">GET - Read</option>
-                        <option value="POST">POST - Create</option>
-                        <option value="PUT">PUT - Update</option>
-                        <option value="DELETE">DELETE - Delete</option>
-                    </select>
-                </div>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Add Permission
-                </button>
-            </form>
-        </div>
-
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold">Existing Permissions</h2>
-            <ul id="permissions-list" class="list-disc pl-5 mt-3">
-                <!-- Permissions will be dynamically added here -->
-            </ul>
-        </div>
-
-        <div>
-            <h2 class="text-2xl font-bold">Manage Users</h2>
-            <form action="/api/users/add" method="POST" class="mt-3">
-                <div class="mb-3">
-                    Username: <input type="text" name="username" required class="border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="mb-3">
-                    Password: <input type="password" name="password" required class="border-gray-300 rounded-md shadow-sm">
-                </div>
-                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                    Add User
-                </button>
-            </form>
-        </div>
-
-        <div class="mt-8">
-            <h3 class="text-xl font-bold">Existing Users</h3>
-            <ul>
-                {% for user in users %}
-                <li class="mt-2">
-                    {{ user.username }}
-                    <form action="/api/users/delete-user/{{ user.id }}" method="post" class="inline-block ml-4">
-                        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Delete</button>
-                    </form>
-                    <button onclick="editUser('{{ user.id }}')" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Edit Password</button>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-
-
-        <div class="mt-10 mb-4 text-left">
-            <!-- Profile Button -->
-            <div class="mb-4">
-                <a href="/profile" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Go to Profile
-                </a>
             </div>
-            <!-- Logout Button -->
-            <form action="/logout" method="GET">
-                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                    Logout
-                </button>
-            </form>
+        </div>
+
+        <div class="container mx-auto p-8">
+            <div class="bg-white p-5 rounded shadow-sm">
+                <h2 class="text-2xl font-bold mb-4">User Endpoint Permissions</h2>
+                <div class="overflow-x-auto mt-3">
+                    <!-- Dedicated scrolling container for the table -->
+                    <div class="overflow-y-auto" style="max-height: 400px;">
+                        <ul id="permissions-list" class="list-disc pl-5 mt-3">
+                            <!-- Permissions will be dynamically added here -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container mx-auto p-8">
+            <div class="bg-white p-5 rounded shadow-sm">
+                <div class="bg-white p-5 rounded shadow-sm mb-8">
+                    <h2 class="text-2xl font-bold mb-4">Give Endpoint Permision to User</h2>
+                    <form id="add-permission-form" class="mt-3">
+                        <div class="mb-3">
+                            <label for="subject-select" class="block text-gray-700 text-sm font-bold mb-2">Subject:</label>
+                            <select name="subject" id="subject-select" class="border border-gray-300 rounded-md shadow-sm p-2 w-full"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="object" class="block text-gray-700 text-sm font-bold mb-2">Object:</label>
+                            <select name="object" id="object" class="border border-gray-300 rounded-md shadow-sm p-2 w-full">
+                                {% for route in routes %}
+                                <option value="{{ route.endpoint }}">{{ route.endpoint }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="action" class="block text-gray-700 text-sm font-bold mb-2">Action:</label>
+                            <select name="action" id="action" class="border border-gray-300 rounded-md shadow-sm p-2 w-full">
+                                <option value="GET">GET - Read</option>
+                                <option value="POST">POST - Create</option>
+                                <option value="PUT">PUT - Update</option>
+                                <option value="DELETE">DELETE - Delete</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Add Permission
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto p-8">
+            <div class="bg-white p-3 rounded shadow-sm">
+                <h3 class="text-xl font-bold mb-4">Existing Users</h3>
+                <ul class="divide-y divide-gray-200">
+                    {% for user in users %}
+                    <li class="flex justify-between items-center py-1 px-2">
+                        <span class="text-gray-800">{{ user.username }}</span>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="editUser('{{ user.id }}')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Change PW</button>
+                            <form action="/api/users/delete-user/{{ user.id }}" method="post">
+                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Delete</button>
+                            </form>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="container mx-auto p-8">
+            <div class="bg-white p-5 rounded shadow-sm">
+                <div class="bg-white p-5 rounded shadow-sm mb-8">
+                    <h2 class="text-2xl font-bold mb-4">Create a User</h2>
+                    <form action="/api/users/add" method="POST" class="mt-3 space-y-4">
+                        <div class="mb-3">
+                            <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username:</label>
+                            <input type="text" name="username" required class="border-gray-300 focus:border-blue-500 focus:bg-gray-200 focus:ring-1 focus:ring-blue-500 rounded-md shadow-sm p-2 w-full">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+                            <input type="password" name="password" required class="border-gray-300 focus:border-blue-500 focus:bg-gray-200 focus:ring-1 focus:ring-blue-500 rounded-md shadow-sm p-2 w-full">
+                        </div>
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Add User
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="container mx-auto p-8">
+            <div class="bg-white p-5 rounded shadow-sm">
+                <div class="mt-8">
+                    <div class="bg-white p-5 rounded shadow-sm">
+                        <h3 class="font-bold text-xl mb-4">Quick Links</h3>
+                        <div class="space-y-2">
+                            <a href="/profile" class="text-blue-500 hover:text-blue-700">User Profile</a><br>
+                            <a href="/manage-permissions" class="text-blue-500 hover:text-blue-700">Manage Permissions</a><br>
+                            <a href="/swagger" class="text-blue-500 hover:text-blue-700">API Documentation: Swagger</a><br>
+                            <a href="/redoc" class="text-blue-500 hover:text-blue-700">API Documentation: ReDoc</a><br>
+                            <a href="/register/admin/2fa/setup" class="text-blue-500 hover:text-blue-700">Update 2FA</a><br>
+                            <a href="/change_password" class="text-blue-500 hover:text-blue-700">Change Password</a><br>
+                            <a href="/api-token" class="text-blue-500 hover:text-blue-700">View or Reset Your API Token</a><br>
+                            <a href="/session-time" class="text-blue-500 hover:text-blue-700">Session Time</a><br>
+                            <a href="/logout" class="text-blue-500 hover:text-blue-700">Logout</a><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -109,49 +164,71 @@
                 .then(data => {
                     // sort the data by subject
                     data.sort((a, b) => a.subject.localeCompare(b.subject));
-                    const list = document.getElementById('permissions-list');
-                    list.innerHTML = ''; // Clear existing list content
-                    data.forEach(permission => {
-                        const item = document.createElement('li');
-                        item.classList.add('mb-4', 'flex', 'justify-between', 'items-center', 'bg-gray-100', 'p-4', 'rounded-lg'); // Tailwind classes for the list item
-                        item.textContent = `
-                            User ID: ${permission.user_id},  
-                            Subject: ${permission.subject}, 
-                            Object: ${permission.object}, 
-                            Action: ${permission.action}
-                        `;
+                    const table = document.getElementById('permissions-list');
+                    // Ensure the table container is clear and then set up the table structure
+                    table.innerHTML = `
+                        <table class="min-w-full bg-white">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">User ID</th>
+                                    <th class="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Subject</th>
+                                    <th class="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Object</th>
+                                    <th class="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
+                                    <th class="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Edit</th>
+                                    <th class="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody id="permissions-body">
+                                <!-- Dynamic rows go here -->
+                            </tbody>
+                        </table>
+                    `;
 
+                    const tbody = document.getElementById('permissions-body');
+
+                    data.forEach(permission => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-2 py-2 border-b border-gray-200 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">${permission.user_id}</p>
+                            </td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">${permission.subject}</p>
+                            </td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">${permission.object}</p>
+                            </td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">${permission.action}</p>
+                            </td>
+                        `;
+                        // Create edit button
+                        const editCell = document.createElement('td');
+                        editCell.className = "py-1 px-2 border-b border-gray-200 text-sm";
                         const editButton = document.createElement('button');
                         editButton.textContent = 'Edit';
-                        editButton.classList.add('bg-blue-500', 'hover:bg-blue-700', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded'); // Tailwind classes for the button
-                        // Avoid using permission.id directly in event listener to prevent undefined errors
-                        editButton.addEventListener('click', function() {
-                            console.log('Edit button clicked for permission: ', permission.id)
-                            editPermission(permission.id);
-                        });
+                        editButton.className = 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded';
+                        editButton.onclick = function() { editPermission(permission.id); };
+                        editCell.appendChild(editButton);
+                        row.appendChild(editCell);
 
+                        // Create delete button
+                        const deleteCell = document.createElement('td');
+                        deleteCell.className = "py-1 px-2 border-b border-gray-200 text-sm";
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = 'Delete';
-                        deleteButton.classList.add('bg-red-500', 'hover:bg-red-700', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded', 'ml-2'); // Tailwind classes for the button
-                        deleteButton.addEventListener('click', function() {
-                            deletePermission(permission.id);
-                        });
+                        deleteButton.className = 'bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded';
+                        deleteButton.onclick = function() { deletePermission(permission.id); };
+                        deleteCell.appendChild(deleteButton);
+                        row.appendChild(deleteCell);
 
-                        // Append buttons to a container div for better control over styling
-                        const buttonContainer = document.createElement('div');
-                        buttonContainer.classList.add('flex', 'items-center');
-                        buttonContainer.appendChild(editButton);
-                        buttonContainer.appendChild(deleteButton);
-
-                        // Appending the button container to the item, not directly to keep text styling intact
-                        item.appendChild(buttonContainer);
-
-                        // Append the item to the list
-                        list.appendChild(item);
+                        // Append the row to the tbody element
+                        tbody.appendChild(row);
                     });
                 })
                 .catch(error => console.error('Error fetching permissions:', error));
         }
+
 
         // Function to fetch and display users
         function fetchUsers() {
@@ -262,5 +339,5 @@
         }
 
     </script>
-    
+
 {% endblock %}

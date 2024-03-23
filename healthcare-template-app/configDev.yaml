@@ -15,4 +15,7 @@ PASSWORD_REQ_SPECIAL: True
 # API Tokens
 TOKEN_EXPIRATION_DAYS: 7 # days untill the token will expire
 
+# 2FA Required 
+TWO_FACTOR_AUTH_REQUIRED: True
+
 

@@ -6,11 +6,10 @@ from util.auth.auth import log_user_activity
 from util.data_access.permissions import get_user_permissions
 from util.rate_limiting.rate_limiter import limiter
 
-api = Namespace('permissions', description='internal permissions, not for public use')
+api = Namespace('permissions', description="""This is a special INTERNAL FACING API for ADMINS used by the Flask application. There is no token required for this API, but depends on the user being logged in using the Flask-Login mechanism, in addition to havbing the proper RBAC permissions for that user. If you want to experiment with this endpoint via Postman or Requests, you would first need to create a new session to login in, then use the session cookie to access this endpoint.""")
 
 @api.route('/', methods=['GET', 'POST'])
 class Permissions(Resource):
-    # @api.doc(security='apikey')  # Adjust according to your actual authentication mechanism
     @login_required
     @log_user_activity
     def get(self):
@@ -18,7 +17,6 @@ class Permissions(Resource):
         permissions_list = [{"id": p.id, "user_id": p.user_id, "subject": p.subject, "object": p.object, "action": p.action} for p in permissions]
         return permissions_list, 200
 
-    # @api.doc(security='apikey')  # Adjust according to your actual authentication mechanism
     @login_required
     @log_user_activity
     @limiter.limit("5 per second")

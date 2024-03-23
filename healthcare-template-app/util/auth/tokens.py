@@ -3,6 +3,14 @@ from flask import request, g, current_app
 from functools import wraps
 from models.models import db, APIToken
 
+authorization_token = {
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-API-Token'
+    }
+}
+
 def generate_secure_token():
     return secrets.token_urlsafe()
 
@@ -19,10 +27,14 @@ def token_required(f):
 
         api_token = APIToken.query.filter_by(token=token).first()
 
+        ## if no token is found, return 403
+        if not api_token:
+            return {'message': 'X-API-Token is invalid!'}, 403
+
         # print current user rertrieved from the token
         current_app.logger.debug(f'Current user: {api_token.username}')
 
-        if not api_token:
+        if not api_token.username:
             return {'message': 'X-API-Token is invalid!'}, 403
 
         if api_token.is_token_expired():

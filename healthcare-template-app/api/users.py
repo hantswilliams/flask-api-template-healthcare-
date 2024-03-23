@@ -4,7 +4,8 @@ from flask_restx import Namespace, Resource
 from models.models import User, db, APIToken
 from werkzeug.security import generate_password_hash
 
-api = Namespace('users', description='internal users, not for public use')
+api = Namespace('users', description="""This is a special INTERNAL FACING API for ADMINS used by the Flask application. There is no token required for this API, but depends on the user being logged in using the Flask-Login mechanism, in addition to havbing the proper RBAC permissions for that user. If you want to experiment with this endpoint via Postman or Requests, you would first need to create a new session to login in, then use the session cookie to access this endpoint.""")
+
 
 @api.route('/')
 class Subjects(Resource):

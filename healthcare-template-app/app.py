@@ -1,6 +1,6 @@
 from api import api
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, render_template
 from flask_login import LoginManager 
 import logging
 from models.models import db
@@ -9,6 +9,7 @@ from util.auth.auth import load_user, renew_session
 from util.config.loader import init_configs
 from util.rate_limiting.rate_limiter import init_app as init_limiter
 from util.sentry.sentry import init_sentry
+from werkzeug.exceptions import Forbidden
 
 load_dotenv()
 
@@ -37,6 +38,10 @@ login_manager.user_loader(load_user)
 @app.before_request
 def before_request_func():
     renew_session()
+
+@app.errorhandler(Forbidden)
+def handle_forbidden(e):
+    return render_template('403.html'), 403
 
 # Non-API Routes for the Flask app using blueprints
 # We use blueprints, using the function from pages/__init__.py
