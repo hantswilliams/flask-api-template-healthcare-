@@ -12,10 +12,10 @@ permissions_to_add = [
     ("alice", "/manage-permissions", "POST"), # required for the admin to manage permissions
     ("alice", "/manage-permissions", "PUT"), # required for the admin to manage permissions
     ("alice", "/manage-permissions", "DELETE"), # required for the admin to manage permissions
-    {"alice", "/permissions", "GET"}, # required /manage-permissions dependency for the admin to manage permissions
-    {"alice", "/permissions", "POST"}, # required /manage-permissions dependency for the admin to manage permissions
-    {"alice", "/permissions", "PUT"}, # required /manage-permissions dependency for the admin to manage permissions
-    {"alice", "/permissions", "DELETE"} # required /manage-permissions dependency for the admin to manage permissions
+    {"alice", "/api/permissions", "GET"}, # required /manage-permissions dependency for the admin to manage permissions
+    {"alice", "/api/permissions", "POST"}, # required /manage-permissions dependency for the admin to manage permissions
+    {"alice", "/api/permissions", "PUT"}, # required /manage-permissions dependency for the admin to manage permissions
+    {"alice", "/api/permissions", "DELETE"} # required /manage-permissions dependency for the admin to manage permissions
     ]
 
 # Users to add

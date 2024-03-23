@@ -1,84 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- load in tailwind -->
-    <title>Manage Permissions</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <!-- logout button -->
-    <form action="/logout" method="GET">
-        <input type="submit" value="Logout">
-    </form>
+{% block title %}
+    Manage Permissions
+{% endblock %}
 
-    <h2>Available Endpoints</h2>
-    <ul id="endpoints-list">
-        {% for route in routes %}
-            <li>{{ route.endpoint }}: {{ route.methods | join(", ") }}</li>
-        {% endfor %}
-    </ul>
+{% block content %}
 
-    <h2>Add New Permission</h2>
-    <form id="add-permission-form">
-        Subject: <select name="subject" id="subject-select"> </select><br>
-        Object: <select name="object">
-            {% for route in routes %}
-                <option value="{{route.endpoint }}">{{ route.endpoint }}</option>
-            {% endfor %}
-        </select><br>
-        Action: <select name="action">
-            <option value="GET">GET - Read</option>
-            <option value="POST">POST - Create</option>
-            <option value="PUT">PUT - Update</option>
-            <option value="DELETE">DELETE - Delete</option>
-        </select><br>
-        <input type="submit" value="Add Permission">
-    </form>
+    <div class="container mx-auto px-4 py-8">
 
-    <h2>Existing Permissions</h2>
-    <ul id="permissions-list">
-        <!-- View for existing permissions will be added here -->
-    </ul>
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold">Available Endpoints</h2>
+            <ul class="list-disc pl-5 mt-3">
+                {% for route in routes %}
+                <li>{{ route.endpoint }}: {{ route.methods | join(", ") }}</li>
+                {% endfor %}
+            </ul>
+        </div>
 
-    <h2>Manage Users</h2>
-    <form action="/api/users/add" method="POST">
-        Username: <input type="text" name="username" required><br>
-        Password: <input type="password" name="password" required><br>
-        <input type="submit" value="Add User">
-    </form>
-
-    <h3>Existing Users</h3>
-    <ul>
-        {% for user in users %}
-        <li>
-            {{ user.username }}
-            <form action="/api/users/delete-user/{{ user.id }}" method="post" style="display: inline;">
-                <button type="submit">Delete</button>
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold">Add New Permission</h2>
+            <form id="add-permission-form" class="mt-3">
+                <div class="mb-3">
+                    Subject: <select name="subject" id="subject-select" class="border-gray-300 rounded-md shadow-sm"></select>
+                </div>
+                <div class="mb-3">
+                    Object: <select name="object" class="border-gray-300 rounded-md shadow-sm">
+                        {% for route in routes %}
+                        <option value="{{ route.endpoint }}">{{ route.endpoint }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    Action: <select name="action" class="border-gray-300 rounded-md shadow-sm">
+                        <option value="GET">GET - Read</option>
+                        <option value="POST">POST - Create</option>
+                        <option value="PUT">PUT - Update</option>
+                        <option value="DELETE">DELETE - Delete</option>
+                    </select>
+                </div>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Add Permission
+                </button>
             </form>
-            <button onclick="editUser('{{ user.id }}')">Edit Password</button>
-        </li>
-        {% endfor %}
-    </ul>
+        </div>
 
-    <br />
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold">Existing Permissions</h2>
+            <ul id="permissions-list" class="list-disc pl-5 mt-3">
+                <!-- Permissions will be dynamically added here -->
+            </ul>
+        </div>
 
-    <a href="/profile">Go to Profile</a>
+        <div>
+            <h2 class="text-2xl font-bold">Manage Users</h2>
+            <form action="/api/users/add" method="POST" class="mt-3">
+                <div class="mb-3">
+                    Username: <input type="text" name="username" required class="border-gray-300 rounded-md shadow-sm">
+                </div>
+                <div class="mb-3">
+                    Password: <input type="password" name="password" required class="border-gray-300 rounded-md shadow-sm">
+                </div>
+                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Add User
+                </button>
+            </form>
+        </div>
 
-    <br />
+        <div class="mt-8">
+            <h3 class="text-xl font-bold">Existing Users</h3>
+            <ul>
+                {% for user in users %}
+                <li class="mt-2">
+                    {{ user.username }}
+                    <form action="/api/users/delete-user/{{ user.id }}" method="post" class="inline-block ml-4">
+                        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Delete</button>
+                    </form>
+                    <button onclick="editUser('{{ user.id }}')" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Edit Password</button>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
 
-    <!-- logout button -->
-
-    <br />
-
-    <form action="/logout" method="GET">
-        <input type="submit" value="Logout">
-    </form>
-
-    <br />
 
 
+        <div class="mt-10 mb-4 text-left">
+            <!-- Profile Button -->
+            <div class="mb-4">
+                <a href="/profile" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Go to Profile
+                </a>
+            </div>
+            <!-- Logout Button -->
+            <form action="/logout" method="GET">
+                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    Logout
+                </button>
+            </form>
+        </div>
+
+
+    </div>
 
     <script>
         // Function to fetch and display permissions
@@ -92,24 +113,40 @@
                     list.innerHTML = ''; // Clear existing list content
                     data.forEach(permission => {
                         const item = document.createElement('li');
-                        item.textContent = `User ID: ${permission.user_id},  Subject: ${permission.subject}, Object: ${permission.object}, Action: ${permission.action}`;
-    
+                        item.classList.add('mb-4', 'flex', 'justify-between', 'items-center', 'bg-gray-100', 'p-4', 'rounded-lg'); // Tailwind classes for the list item
+                        item.textContent = `
+                            User ID: ${permission.user_id},  
+                            Subject: ${permission.subject}, 
+                            Object: ${permission.object}, 
+                            Action: ${permission.action}
+                        `;
+
                         const editButton = document.createElement('button');
                         editButton.textContent = 'Edit';
+                        editButton.classList.add('bg-blue-500', 'hover:bg-blue-700', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded'); // Tailwind classes for the button
                         // Avoid using permission.id directly in event listener to prevent undefined errors
                         editButton.addEventListener('click', function() {
                             console.log('Edit button clicked for permission: ', permission.id)
                             editPermission(permission.id);
                         });
-    
+
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = 'Delete';
+                        deleteButton.classList.add('bg-red-500', 'hover:bg-red-700', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded', 'ml-2'); // Tailwind classes for the button
                         deleteButton.addEventListener('click', function() {
                             deletePermission(permission.id);
                         });
-    
-                        item.appendChild(editButton);
-                        item.appendChild(deleteButton);
+
+                        // Append buttons to a container div for better control over styling
+                        const buttonContainer = document.createElement('div');
+                        buttonContainer.classList.add('flex', 'items-center');
+                        buttonContainer.appendChild(editButton);
+                        buttonContainer.appendChild(deleteButton);
+
+                        // Appending the button container to the item, not directly to keep text styling intact
+                        item.appendChild(buttonContainer);
+
+                        // Append the item to the list
                         list.appendChild(item);
                     });
                 })
@@ -224,101 +261,6 @@
             }
         }
 
-
-
     </script>
     
-
-
-    <!-- <script>
-
-        // Function to fetch and display permissions
-        function fetchPermissions() {
-            fetch('/permissions')
-                .then(response => response.json())
-                .then(data => {
-                    const list = document.getElementById('permissions-list');
-                    list.innerHTML = ''; // Clear existing list content
-                    data.forEach(permission => {
-                        const item = document.createElement('li');
-                        item.innerHTML = `Subject: ${permission.subject}, Object: ${permission.object}, Action: ${permission.action}
-                            <button onclick="editPermission(${permission.id})">Edit</button>
-                            <button onclick="deletePermission(${permission.id})">Delete</button>`;
-                        list.appendChild(item);
-                    });
-                })
-                .catch(error => console.error('Error fetching permissions:', error));
-        }
-
-        // Function to delete a permission
-        function editPermission(permissionId) {
-            const subject = prompt("Enter new subject:");
-            const object = prompt("Enter new object:");
-            const action = prompt("Enter new action:");
-
-            if (subject && object && action) {
-                fetch(`/permissions/${permissionId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({subject, object, action}),
-                })
-                .then(response => {
-                    if (response.ok) {
-                        fetchPermissions(); // Refresh the permissions list upon successful update
-                    } else {
-                        alert('Error updating permission');
-                    }
-                })
-                .catch(error => console.error('Error updating permission:', error));
-            }
-        }
-
-        // Function to delete a permission
-        function deletePermission(permissionId) {
-            if (confirm("Are you sure you want to delete this permission?")) {
-                fetch(`/permissions/${permissionId}`, {
-                    method: 'DELETE',
-                })
-                .then(response => {
-                    if (response.ok) {
-                        fetchPermissions(); // Refresh the permissions list upon successful deletion
-                    } else {
-                        alert('Error deleting permission');
-                    }
-                })
-                .catch(error => console.error('Error deleting permission:', error));
-            }
-        }
-
-
-        // Add the new permission via POST request
-        document.getElementById('add-permission-form').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent default form submission behavior
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-
-            fetch('/permissions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => {
-                if (response.ok) {
-                    fetchPermissions(); // Refresh the permissions list upon successful addition
-                } else {
-                    alert('Error adding permission');
-                }
-            })
-            .catch(error => console.error('Error posting permission:', error));
-        });
-
-        // Fetch and display existing permissions when the page loads
-        document.addEventListener('DOMContentLoaded', fetchPermissions);
-
-    </script> -->
-</body>
-</html>
+{% endblock %}

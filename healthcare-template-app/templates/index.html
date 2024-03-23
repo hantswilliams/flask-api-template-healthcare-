@@ -1,12 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Setup 2FA</title>
-</head>
-<body>
-    <H4> Welcome to the Opionated Healthcare Flask Demo / Template App </H4>
-    <p> This is a simple Flask app that demonstrates how to implement basic security measures that should always be considered when building a healthcare application. </p>
-    <a href="/login">Login</a><br>
-    <a href="/register">Register</a><br>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}
+    Welcome
+{% endblock %}
+
+{% block content %}
+
+    <h4 class="text-2xl font-semibold text-blue-800 mb-4"> Welcome to the Opinionated Healthcare Flask Demo / Template App </h4>
+    <p class="mb-4"> This is a simple Flask app that demonstrates how to implement basic security measures that should always be considered when building a healthcare application. </p>
+    <p class="mb-8"> The way this app works, is that we give you a basic user portal as seen here for admins and others with permissions to update specific condfigurations and addition of users. Then 
+        there is a series of APIs that are protected using best practices for security (rotating tokens, API limiting, RBAC, etc...). The idea is that this template can then be used to add your own data to using the opioniated security measures and strcture, providing both a administrative GUI
+        in addition to secure API endpoints; or to be used as a security testing tool to try and break the security measures in place. </p>
+    </p>
+    <a href="/login" class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300 ease-in-out">Login</a>
+    <a href="/register" class="bg-blue-500 text-white font-bold py-2 px-4 ml-2 rounded hover:bg-blue-700 transition duration-300 ease-in-out">Register</a>
+
+{% endblock %}

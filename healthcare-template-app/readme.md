@@ -22,12 +22,44 @@ This is for demonstration pursposes and learning, showcasing the flexibility of 
 
 ## ENV file Structure 
 
-The `.env` file should be structured as follows, and found in the root directory of the project.
+The `.env` file should be structured as follows, and found in the root directory of the project. 
+- The PRODUCTION_ENV is used to determine if the app is in production or not. The options are True or False. If you select FALSE, it will use the `configDev.yaml` file. If you select TRUE, it will use the `configProd.yaml` file.
+- The REDIS_ENDPOINT is a dependency for the rate limiter. Recommend using the free tier of RedisLabs.
+- The SENTRY_DSN is used for error logging. It is required. It is free for up to 5000 (?)events per month.
+- The SECRET_KEY is used for the Flask app. It is required.
+- The SQLALCHEMY_DATABASE_URI is used for the database connection. It is required. Currently have only tested with SQLite. Plan on updating with MySQL and PostgreSQL.
 
 ```
+PRODUCTION_ENV = 
 REDIS_ENDPOINT = 
 SENTRY_DSN = 
+SECRET_KEY = 
+SQLALCHEMY_DATABASE_URI = 
 ```
+
+## Configuration File (DEV) . YAML file 
+
+The `configDEV.yaml` file should be structured as follows, and found in the root directory of the project. There is a DEV and a PROD (`configProd.yaml`) file. 
+
+```
+# Sessions/Cookies
+PERMANENT_SESSION_LIFETIME: 15  # number in minutes; this is how long the session will last
+SESSION_COOKIE_SECURE: False # should be set to True in production - makes requirement for HTTPS
+SESSION_COOKIE_HTTPONLY: True # should be set to True in production; prevents JavaScript from accessing the cookie
+SESSION_COOKIE_SAMESITE: Lax # or Strict, None - can use Strict if you are paranoid about CSRF attacks
+REMEMBER_COOKIE_DURATION: 7 # number of DAYS to remember the user
+
+# Password restrictions
+PASSWORD_MIN_LENGTH: 8
+PASSWORD_REQ_UPPERCASE: True
+PASSWORD_REQ_LOWERCASE: True
+PASSWORD_REQ_DIGIT: True
+PASSWORD_REQ_SPECIAL: True
+
+# API Tokens
+TOKEN_EXPIRATION_DAYS: 7 # days untill the token will expire
+```
+
 
 ## HIPAA / HITRUST items covered in this example app:
 

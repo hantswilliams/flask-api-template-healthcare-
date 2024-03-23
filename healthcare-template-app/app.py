@@ -18,11 +18,15 @@ app = Flask(__name__)
 ## Keep debugging on
 app.logger.setLevel(logging.DEBUG)  # Set the desired logging level
 
-# Initialize configurations, Sentry, Rate limting, API routes, database, flask-login
+# Initialize Configurations, Sentry (logging), and Rate limting across the app
 init_configs(app)
 init_sentry()
 init_limiter(app)
+
+# Initialize the API endpoints
 api.init_app(app)
+
+# Initialize the database
 db.init_app(app)
 
 # Flask-Login setup
@@ -35,7 +39,7 @@ def before_request_func():
     renew_session()
 
 # Non-API Routes for the Flask app using blueprints
-# Register the Blueprints using the function from pages/__init__.py
+# We use blueprints, using the function from pages/__init__.py
 register_blueprints(app)
 
 if __name__ == '__main__':
