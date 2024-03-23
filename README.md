@@ -6,6 +6,8 @@
     - `python3 -m venv venv` or `python -m venv venv`
     - `source venv/bin/activate`
     - `pip install -r requirements.txt`
+    - update the `.env` file with the necessary information
+    - update the `configDev.yaml` file with the necessary information if you want it changed
     - CD into the `healthcare-template-app` directory
     - `python3 init_db.py` or `python init_db.py`
     - `python3 app.py` or `python app.py`
