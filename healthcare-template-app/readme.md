@@ -1,4 +1,4 @@
-# HIPAA / HITRUST items covered in this example app:
+# A secure(ish) Flask application for Healthcare
 
 A brief demo of potential HIPAA / HITRUST items that can be covered in a Flask application.
 This is for demonstration pursposes and learning, showcasing the flexibility of Flask. The template for this flask ask can be found in the `/healthcare-template-app` directory.
