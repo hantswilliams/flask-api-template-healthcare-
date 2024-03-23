@@ -5,12 +5,14 @@ This is for demonstration pursposes and learning, showcasing the flexibility of 
 
 ## Notes to self: 
 - Pages: 
+    - inspired by Next.js, and the idea of having a `pages` folder
     - This folder contains web pages that are rendered by the Flask app.
     - Right now these are basic, and if you want to display json here, use JSONIFY from flask
     - These use the Jinja2 templating engine, along with HTML, CSS, and JS
     - Managed by FLASK BLUEPRINTS
     - Decorators go within the route itself, versus in the class method like in the API
 - API:
+    - inspired by Next.js, and the idea of having a `api` folder
     - This folder contains the API endpoints that are used by the front end
     - These are managed by FLASK_RESTX 
     - Each of these endpoints automatically generates a Swagger UI page
