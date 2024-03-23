@@ -1,5 +1,21 @@
 # flask-api-template-healthcare 
 
+## Quick start
+
+### Local Development without docker:
+    - `python3 -m venv venv` or `python -m venv venv`
+    - `source venv/bin/activate`
+    - `pip install -r requirements.txt`
+    - CD into the `healthcare-template-app` directory
+    - `python3 init_db.py` or `python init_db.py`
+    - `python3 app.py` or `python app.py`
+
+### Local Development with docker:
+    - `docker buildx build --platform linux/amd64 -t flaskhealth .` 
+    - `docker run -p 5010:5005 flaskhealth`
+    - open up a browser and go to `http://localhost:5010/`
+
+
 ## To do
 - Now need to go in add in the linting (black? or the new rust one?)
 - Now need to go in add in the testing (pytest)
