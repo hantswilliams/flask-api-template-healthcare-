@@ -3,6 +3,23 @@
 A brief demo of potential HIPAA / HITRUST items that can be covered in a Flask application.
 This is for demonstration pursposes and learning, showcasing the flexibility of Flask. The template for this flask ask can be found in the `/healthcare-template-app` directory.
 
+## Notes to self: 
+- Pages: 
+    - This folder contains web pages that are rendered by the Flask app.
+    - Right now these are basic, and if you want to display json here, use JSONIFY from flask
+    - These use the Jinja2 templating engine, along with HTML, CSS, and JS
+    - Managed by FLASK BLUEPRINTS
+    - Decorators go within the route itself, versus in the class method like in the API
+- API:
+    - This folder contains the API endpoints that are used by the front end
+    - These are managed by FLASK_RESTX 
+    - Each of these endpoints automatically generates a Swagger UI page
+    - Each of these endpoints will automatically convert to JSON, no need for jsonify
+    - Each of these require a namespace, and a class that inherits from Resource
+        - The class will have methods for each HTTP method (GET, POST, PUT, DELETE)
+        - Each method will have a decorator that specifies the route, and the expected parameters
+        - Inside of the class method, we then put the decorators like @token_required, @rbac(), and  @limiter.limit("1 per sec"); versus in the route itself like in the pages
+
 ## ENV file Structure 
 
 The `.env` file should be structured as follows, and found in the root directory of the project.

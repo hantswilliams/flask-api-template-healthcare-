@@ -43,7 +43,7 @@
     </ul>
 
     <h2>Manage Users</h2>
-    <form action="/add-user" method="post">
+    <form action="/api/users/add" method="POST">
         Username: <input type="text" name="username" required><br>
         Password: <input type="password" name="password" required><br>
         <input type="submit" value="Add User">
@@ -54,7 +54,7 @@
         {% for user in users %}
         <li>
             {{ user.username }}
-            <form action="/delete-user/{{ user.id }}" method="post" style="display: inline;">
+            <form action="/api/users/delete-user/{{ user.id }}" method="post" style="display: inline;">
                 <button type="submit">Delete</button>
             </form>
             <button onclick="editUser('{{ user.id }}')">Edit Password</button>
@@ -69,16 +69,21 @@
     <br />
 
     <!-- logout button -->
+
+    <br />
+
     <form action="/logout" method="GET">
         <input type="submit" value="Logout">
     </form>
+
+    <br />
 
 
 
     <script>
         // Function to fetch and display permissions
         function fetchPermissions() {
-            fetch('/permissions')
+            fetch('/api/permissions')
                 .then(response => response.json())
                 .then(data => {
                     // sort the data by subject
@@ -93,6 +98,7 @@
                         editButton.textContent = 'Edit';
                         // Avoid using permission.id directly in event listener to prevent undefined errors
                         editButton.addEventListener('click', function() {
+                            console.log('Edit button clicked for permission: ', permission.id)
                             editPermission(permission.id);
                         });
     
@@ -110,9 +116,9 @@
                 .catch(error => console.error('Error fetching permissions:', error));
         }
 
-        // Function to fetch and display subjects
-        function fetchSubjects() {
-            fetch('/subjects')
+        // Function to fetch and display users
+        function fetchUsers() {
+            fetch('/api/users')
                 .then(response => response.json())
                 .then(data => {
                     const select = document.getElementById('subject-select');
@@ -124,11 +130,11 @@
                         select.appendChild(option);
                     });
                 })
-                .catch(error => console.error('Error fetching subjects:', error));
+                .catch(error => console.error('Error fetching users:', error));
         }
 
-        // Call fetchSubjects on page load to populate the subjects dropdown
-        document.addEventListener('DOMContentLoaded', fetchSubjects);
+        // Call fetchUsers on page load to populate the subjects dropdown
+        document.addEventListener('DOMContentLoaded', fetchUsers);
 
     
         // Function to edit a permission (assumes subject should not be editable based on requirements)
@@ -137,7 +143,7 @@
             const action = prompt("Enter new action:");
     
             if (object && action) {
-                fetch(`/permissions/${permissionId}`, {
+                fetch(`/api/permissions/${permissionId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -158,7 +164,7 @@
         // Function to delete a permission
         function deletePermission(permissionId) {
             if (confirm("Are you sure you want to delete this permission?")) {
-                fetch(`/permissions/${permissionId}`, {
+                fetch(`/api/permissions/${permissionId}`, {
                     method: 'DELETE',
                 })
                 .then(response => {
@@ -178,7 +184,7 @@
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
     
-            fetch('/permissions', {
+            fetch('/api/permissions/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -205,7 +211,7 @@
                 // Assuming you have a hidden form for editing user passwords
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = `/edit-user/${userId}`;
+                form.action = `/api/users/edit-user/${userId}`;
 
                 const newPasswordInput = document.createElement('input');
                 newPasswordInput.type = 'hidden';

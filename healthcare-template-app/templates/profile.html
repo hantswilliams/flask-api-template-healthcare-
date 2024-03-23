@@ -37,29 +37,9 @@
     <a href="/register/admin/2fa/setup">Update 2FA</a><br>
     <a href="/change_password">Change Password</a><br>
     <a href="/api-token">View Your API Token</a><br>
-    <a href="#" onclick="testApiToken();">Test your token</a><br>
+    <a href="/session-time">Session Time</a><br>
     <a href="/logout">Logout</a><br>
     <script>
-    function testApiToken() {
-        var token = "{{ user_token }}";
-        fetch('/api-token-test', {
-            method: 'GET',
-            headers: {'X-API-Token': token}
-        })
-        .then(response => {
-            if(response.ok) {
-                return response.text();
-            }
-            throw new Error('Request failed.');
-        })
-        .then(data => {
-            console.log(data);
-            alert('Token test successful. Check console for response.');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
     </script>
 </body>
 </html>

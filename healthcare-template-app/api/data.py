@@ -5,6 +5,7 @@ from util.rate_limiting.rate_limiter import limiter
 
 api = Namespace('data', description='data operations')
 
+### Simple test endpoint to check if the API is working with TOKEN and RBAC
 @api.route('/test')
 class DataTest(Resource):
     @token_required
@@ -12,3 +13,4 @@ class DataTest(Resource):
     @limiter.limit("1 per sec")
     def get(self):
         return {'message': 'You are authorized to access this endpoint!'}, 200
+
