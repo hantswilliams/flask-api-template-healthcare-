@@ -8,10 +8,10 @@ def generate_secure_token():
 
 # Permissions to add
 permissions_to_add = [
-    ("alice", "/manage-permissions", "GET"),
-    ("alice", "/manage-permissions", "POST"),
-    ("alice", "/manage-permissions", "PUT"),
-    ("alice", "/manage-permissions", "DELETE"),
+    ("alice", "/manage-permissions/", "GET"),
+    ("alice", "/manage-permissions/", "POST"),
+    ("alice", "/manage-permissions/", "PUT"),
+    ("alice", "/manage-permissions/", "DELETE"),
     ("alice", "/api/permissions/", "GET"),
     ("alice", "/api/permissions/", "POST"),
     ("alice", "/api/permissions/", "PUT"),

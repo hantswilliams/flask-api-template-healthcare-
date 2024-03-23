@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from datetime import timedelta
 import os
 import yaml
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 def load_configurations(app):
 
@@ -40,4 +41,9 @@ def load_configurations(app):
 
 def init_configs(app):
     load_configurations(app)
+
+    # if the PROXY_FIX config is set to True, we will use the ProxyFix middleware
+    if app.config.get('PROXY_FIX'):
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+
     return app

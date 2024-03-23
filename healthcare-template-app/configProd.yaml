@@ -1,3 +1,9 @@
+# URL schemes 
+PREFERRED_URL_SCHEME: https
+
+# Proxy Fix for Prod:
+PROXY_FIX: True
+
 # Sessions/Cookies
 PERMANENT_SESSION_LIFETIME: 15  # number in minutes; this is how long the session will last
 SESSION_COOKIE_SECURE: True # should be set to True in production - makes requirement for HTTPS
