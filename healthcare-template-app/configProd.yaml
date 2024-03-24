@@ -1,14 +1,6 @@
-# URL schemes 
-PREFERRED_URL_SCHEME: https
-
 # Sessions/Cookies
 PERMANENT_SESSION_LIFETIME: 15  # number in minutes; this is how long the session will last
 REMEMBER_COOKIE_DURATION: 7 # number of DAYS to remember the user
-
-# SESSION_COOKIE_HTTPONLY: True # should be set to True in production; prevents JavaScript from accessing the cookie
-# SESSION_COOKIE_SAMESITE: Lax # or Strict, None - can use Strict if you are paranoid about CSRF attacks
-# SESSION_COOKIE_SECURE: True # should be set to True in production - makes requirement for HTTPS
-#### Trying to use Flask Tailman instead here....
 
 # Password restrictions
 PASSWORD_MIN_LENGTH: 8
@@ -21,5 +13,5 @@ PASSWORD_REQ_SPECIAL: True
 TOKEN_EXPIRATION_DAYS: 7 # days untill the token will expire
 
 # 2FA Required 
-TWO_FACTOR_AUTH_REQUIRED: False
+TWO_FACTOR_AUTH_REQUIRED: True
 

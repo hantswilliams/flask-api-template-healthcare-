@@ -2,7 +2,6 @@ from api import api
 from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_login import LoginManager 
-from flask_talisman import Talisman
 import logging
 from models.models import db
 from pages import register_blueprints  # Import the register_blueprints function
@@ -24,9 +23,6 @@ app.logger.setLevel(logging.DEBUG)  # Set the desired logging level
 init_configs(app)
 init_sentry()
 init_limiter(app)
-
-# tailman for SSL testing
-Talisman(app)
 
 # Initialize the API endpoints
 api.init_app(app)

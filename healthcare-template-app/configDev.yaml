@@ -1,10 +1,5 @@
-# URL schemes 
-PREFERRED_URL_SCHEME: http
-
 # Sessions/Cookies
 PERMANENT_SESSION_LIFETIME: 15  # number in minutes; this is how long the session will last
-SESSION_COOKIE_HTTPONLY: True # should be set to True in production; prevents JavaScript from accessing the cookie
-SESSION_COOKIE_SAMESITE: Lax # or Strict, None - can use Strict if you are paranoid about CSRF attacks
 REMEMBER_COOKIE_DURATION: 7 # number of DAYS to remember the user
 
 # Password restrictions
