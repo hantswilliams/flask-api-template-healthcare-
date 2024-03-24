@@ -49,7 +49,7 @@ def load_talisman(app):
     else:
         print('Production environment, True for Talisman')
         Talisman(app, content_security_policy=None)
-        print('Talisman initialized')
+        print('Talisman initialized, without CSP')
 
 
 def init_configs(app):
