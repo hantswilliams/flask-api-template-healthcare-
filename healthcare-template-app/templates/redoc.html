@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ReDoc</title>
+    <script src="{{ url_for('static', filename='js/redoc.standalone.js') }}"></script>
+  </head>
+  <body>
+    <redoc spec-url='/api/swagger.json'></redoc>
+    <script>
+      Redoc.init('/api/swagger.json')
+    </script>
+  </body>
+
+
+</html>

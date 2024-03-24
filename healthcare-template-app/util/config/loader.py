@@ -42,17 +42,17 @@ def load_configurations(app):
     if 'REMEMBER_COOKIE_DURATION' in app.config:
         app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=int(app.config['REMEMBER_COOKIE_DURATION']))
 
-def talisman(app):
+def load_talisman(app):
     if os.getenv("PRODUCTION_ENV") == 'False':
         print('Not a production environment, False for Talisman')
         pass
     else:
         print('Production environment, True for Talisman')
-        Talisman(app)
+        Talisman(app, content_security_policy=None)
         print('Talisman initialized')
 
 
 def init_configs(app):
     load_configurations(app)
-    talisman(app)
+    load_talisman(app)
     return app

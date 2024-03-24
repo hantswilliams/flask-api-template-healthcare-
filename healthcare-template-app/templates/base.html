@@ -36,9 +36,8 @@
         
     </footer>
 
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
+    <!-- External JavaScript File -->
+    <script src="{{ url_for('static', filename='js/base.js') }}"></script>
 
 </body>
 </html>

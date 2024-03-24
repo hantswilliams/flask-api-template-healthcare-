@@ -91,24 +91,7 @@
             </div>
         </div>
 
-        <div class="container mx-auto p-8">
-            <div class="bg-white p-3 rounded shadow-sm">
-                <h3 class="text-xl font-bold mb-4">Existing Users</h3>
-                <ul class="divide-y divide-gray-200">
-                    {% for user in users %}
-                    <li class="flex justify-between items-center py-1 px-2">
-                        <span class="text-gray-800">{{ user.username }}</span>
-                        <div class="flex items-center space-x-2">
-                            <button onclick="editUser('{{ user.id }}')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Change PW</button>
-                            <form action="/api/users/delete-user/{{ user.id }}" method="post">
-                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Delete</button>
-                            </form>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+
 
         <div class="container mx-auto p-8">
             <div class="bg-white p-5 rounded shadow-sm">
@@ -130,6 +113,25 @@
                 </div>
             </div>
         </div>
+
+        <div class="container mx-auto p-8">
+            <div class="bg-white p-3 rounded shadow-sm">
+                <h3 class="text-xl font-bold mb-4">Existing Users</h3>
+                <ul class="divide-y divide-gray-200">
+                    {% for user in users %}
+                    <li class="flex justify-between items-center py-1 px-2">
+                        <span class="text-gray-800">{{ user.username }}</span>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="editUser('{{ user.id }}')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Change PW</button>
+                            <form action="/api/users/delete-user/{{ user.id }}" method="post">
+                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Delete</button>
+                            </form>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
         
 
         <div class="container mx-auto p-8">
@@ -144,7 +146,7 @@
                             <a href="/redoc" class="text-blue-500 hover:text-blue-700">API Documentation: ReDoc</a><br>
                             <a href="/register/admin/2fa/setup" class="text-blue-500 hover:text-blue-700">Update 2FA</a><br>
                             <a href="/change_password" class="text-blue-500 hover:text-blue-700">Change Password</a><br>
-                            <a href="/api-token" class="text-blue-500 hover:text-blue-700">View or Reset Your API Token</a><br>
+                            <a href="/api-token" class="text-blue-500 hover:text-blue-700">View Your API Token</a><br>
                             <a href="/session-time" class="text-blue-500 hover:text-blue-700">Session Time</a><br>
                             <a href="/logout" class="text-blue-500 hover:text-blue-700">Logout</a><br>
                         </div>
@@ -157,7 +159,9 @@
     </div>
 
     <script>
+
         // Function to fetch and display permissions
+
         function fetchPermissions() {
             fetch('/api/permissions')
                 .then(response => response.json())
@@ -202,6 +206,7 @@
                                 <p class="text-gray-900 whitespace-no-wrap">${permission.action}</p>
                             </td>
                         `;
+                        
                         // Create edit button
                         const editCell = document.createElement('td');
                         editCell.className = "py-1 px-2 border-b border-gray-200 text-sm";
@@ -250,12 +255,12 @@
         // Call fetchUsers on page load to populate the subjects dropdown
         document.addEventListener('DOMContentLoaded', fetchUsers);
 
-    
+
         // Function to edit a permission (assumes subject should not be editable based on requirements)
         function editPermission(permissionId) {
             const object = prompt("Enter new object:");
             const action = prompt("Enter new action:");
-    
+
             if (object && action) {
                 fetch(`/api/permissions/${permissionId}`, {
                     method: 'PUT',
@@ -274,7 +279,7 @@
                 .catch(error => console.error('Error updating permission:', error));
             }
         }
-    
+
         // Function to delete a permission
         function deletePermission(permissionId) {
             if (confirm("Are you sure you want to delete this permission?")) {
@@ -291,13 +296,13 @@
                 .catch(error => console.error('Error deleting permission:', error));
             }
         }
-    
+
         // Add a new permission via POST request
         document.getElementById('add-permission-form').addEventListener('submit', function(e) {
             e.preventDefault(); // Prevent default form submission behavior
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
-    
+
             fetch('/api/permissions/', {
                 method: 'POST',
                 headers: {
@@ -314,7 +319,7 @@
             })
             .catch(error => console.error('Error posting permission:', error));
         });
-    
+
         // Fetch and display existing permissions when the page loads
         document.addEventListener('DOMContentLoaded', fetchPermissions);
 
@@ -337,6 +342,8 @@
                 form.submit();
             }
         }
+
+
 
     </script>
 

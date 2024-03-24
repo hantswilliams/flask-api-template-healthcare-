@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <!-- Tailwind CSS -->
     <link href="{{ url_for('static', filename='tailwind.2.2.19.min.css') }}" rel="stylesheet">
 </head>
 
@@ -58,37 +57,8 @@
         </p>
     </div>
 
-    <script>
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent default form submission
-
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-        const errorModal = document.getElementById('errorModal');
-
-        fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                window.location.href = '/profile'; // Redirect on successful login
-            } else {
-                // Display error message and remaining attempts
-                errorModal.textContent = `${result.message}. You have ${result.remaining_attempts} remaining login attempts.`;
-                errorModal.classList.remove('hidden');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            errorModal.textContent = 'An error occurred. Please try again.';
-            errorModal.classList.remove('hidden');
-        });
-    });
-    </script>
+    <!-- External JavaScript File -->
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 
 </body>
+</html>
