@@ -16,3 +16,4 @@ pypng
 flask_restx
 sentry-sdk[flask]
 PyYAML
+flask-talisman

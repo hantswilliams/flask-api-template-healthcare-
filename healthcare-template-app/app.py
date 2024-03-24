@@ -2,6 +2,7 @@ from api import api
 from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_login import LoginManager 
+from flask_talisman import Talisman
 import logging
 from models.models import db
 from pages import register_blueprints  # Import the register_blueprints function
@@ -24,6 +25,9 @@ init_configs(app)
 init_sentry()
 init_limiter(app)
 
+# tailman for SSL testing
+Talisman(app)
+
 # Initialize the API endpoints
 api.init_app(app)
 
@@ -43,8 +47,7 @@ def before_request_func():
 def handle_forbidden(e):
     return render_template('403.html'), 403
 
-# Non-API Routes for the Flask app using blueprints
-# We use blueprints, using the function from pages/__init__.py
+# Non-API Routes for the Flask app using blueprints (pages folder - init.py)
 register_blueprints(app)
 
 if __name__ == '__main__':
