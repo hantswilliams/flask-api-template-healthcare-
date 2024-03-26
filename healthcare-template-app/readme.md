@@ -11,6 +11,8 @@ This is for demonstration pursposes and learning, showcasing the flexibility of 
     - These use the Jinja2 templating engine, along with HTML, CSS, and JS
     - Managed by FLASK BLUEPRINTS
     - Decorators go within the route itself, versus in the class method like in the API
+- Security and Templates
+    - Based on the Talisman settings flound in loader.py file, we are enabling scripts to be executed that exist in the .html page, but not from external sources. So in order for the `<script>` tags to work properly, need to have the it look like: `<script nonce="{{ csp_nonce() }}">` in the .html pages that contain a script tag.
 - API:
     - inspired by Next.js, and the idea of having a `api` folder
     - This folder contains the API endpoints that are used by the front end

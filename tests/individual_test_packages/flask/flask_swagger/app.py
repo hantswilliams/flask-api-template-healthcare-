@@ -20,7 +20,7 @@ def redoc():
       </head>
       <body>
         <redoc spec-url='/swagger.json'></redoc>
-        <script>
+        <script nonce="{{ csp_nonce() }}">
           Redoc.init('/swagger.json')
         </script>
       </body>

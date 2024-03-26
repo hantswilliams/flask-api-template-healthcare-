@@ -48,7 +48,15 @@ def load_talisman(app):
         pass
     else:
         print('Production environment, True for Talisman')
-        Talisman(app, content_security_policy=None)
+        # Talisman(app, content_security_policy=None)
+        csp = {
+            'script-src': '\'self\'', 
+        }
+        Talisman(
+            app, 
+            content_security_policy=csp,
+            content_security_policy_nonce_in=['script-src']
+        )
         print('Talisman initialized, without CSP')
 
 

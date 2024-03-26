@@ -6,7 +6,7 @@
   </head>
   <body>
     <redoc spec-url='/api/swagger.json'></redoc>
-    <script>
+    <script nonce="{{ csp_nonce() }}">
       Redoc.init('/api/swagger.json')
     </script>
   </body>
