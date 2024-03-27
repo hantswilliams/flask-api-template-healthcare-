@@ -50,50 +50,33 @@ def load_configurations(app):
 
 
 def load_talisman(app):
-    # if os.getenv("PRODUCTION_ENV") == "False":
-    #     print("Not a production environment, security set low r Talisman")
-    #     Talisman(app, content_security_policy=None)
-    #     pass
-    # else:
-    #     print("Production environment, True for Talisman")
-    #     # Talisman(app, content_security_policy=None)
-    #     csp = {
-    #         "script-src": "'self'",
-    #         "style-src": "'self'",
-    #         "img-src": "'self'",
-    #     }
-    #     Talisman(
-    #         app,
-    #         content_security_policy=csp,
-    #         content_security_policy_nonce_in=["script-src"],
-    #     )
-    #     print("Talisman initialized, without CSP")
-
-    # Initialize Talisman without enforcing CSP globally
-    talisman = Talisman(app, content_security_policy=None, force_https=False)
+    # Initialize Talisman with CSP allowing HTTPS resources
+    talisman = Talisman(app, content_security_policy=None)
 
     @app.before_request
     def before_request_func():
-        # Check if the request is for the 'redoc' endpoint or /swagger endpoint
-        if request.endpoint == "redoc_pages.redoc" or request.path.startswith(
-            "/swagger"
-        ):
-            # Disable CSP for 'redoc' endpoint
+        if request.endpoint in [
+            "redoc_pages.redoc",
+            "swagger_ui.swagger_ui",
+        ] or request.path.startswith("/swagger"):
+            # Disable CSP and HTTPS enforcement for specific endpoints if necessary
             talisman.content_security_policy = None
             talisman.force_https = False
         else:
-            # Apply stricter CSP for all other endpoints
+            # Stricter CSP for all other endpoints, enforcing HTTPS
             csp = {
-                "default-src": "'self'",
-                "script-src": "'self'",
-                "style-src": "'self'",
-                "img-src": "'self'",
+                "default-src": ["'self'", "'unsafe-inline'"],
+                "script-src": ["'self'", "'unsafe-inline'"],
+                "style-src": ["'self'"],
+                "img-src": ["'self'"],
+                "connect-src": ["'self'", os.getenv("PROD_URL_HTTPS")],
             }
             talisman.content_security_policy = csp
             talisman.content_security_policy_nonce_in = ["script-src"]
+            # Force HTTPS in production environments
             talisman.force_https = os.getenv("PRODUCTION_ENV") == "True"
 
-    print("Talisman configured with dynamic CSP based on request endpoint")
+    print("Talisman configured for HTTPS enforcement in production")
 
 
 def init_configs(app):
