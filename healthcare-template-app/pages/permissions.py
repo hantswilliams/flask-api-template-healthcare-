@@ -24,4 +24,5 @@ def permissions_view():
                 "endpoint": endpoint_value,
                 "methods": list(i.methods - set(['HEAD', 'OPTIONS']))
             })
+            
     return render_template('permissions.html', permissions=permissions, users=users, routes=routes)

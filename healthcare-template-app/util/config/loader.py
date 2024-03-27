@@ -45,17 +45,20 @@ def load_configurations(app):
 def load_talisman(app):
     if os.getenv("PRODUCTION_ENV") == 'False':
         print('Not a production environment, False for Talisman')
+        Talisman(app, content_security_policy=None)
         pass
     else:
         print('Production environment, True for Talisman')
         # Talisman(app, content_security_policy=None)
         csp = {
             'script-src': '\'self\'', 
+            'style-src': '\'self\'',
+            'img-src': '\'self\'',
         }
         Talisman(
             app, 
             content_security_policy=csp,
-            content_security_policy_nonce_in=['script-src']
+            content_security_policy_nonce_in=['script-src'],
         )
         print('Talisman initialized, without CSP')
 
