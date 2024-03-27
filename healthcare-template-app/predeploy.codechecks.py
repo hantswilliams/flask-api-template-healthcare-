@@ -120,10 +120,35 @@ ruff_errors = format_with_ruff(".")
 print(Fore.GREEN + "Ruff formatting complete.")
 print(Style.RESET_ALL)
 
+
+# Verison bumper
+def bump_version():
+    version_file = "version.txt"
+    major, minor, patch = 0, 0, 0
+
+    # Read the current version
+    with open(version_file, "r") as file:
+        major, minor, patch = map(int, file.read().strip().split("."))
+
+    # Increment the patch version
+    patch += 1
+
+    # Write the new version back
+    with open(version_file, "w") as file:
+        new_version = f"{major}.{minor}.{patch}"
+        file.write(new_version)
+
+    return new_version
+
+
 #### if ruff_errors is empty and bad_files is empty, then the code checks pass
 #### and we should print a success message in all bold green text
 
 if not ruff_errors and not bad_files:
+    # Bump the version
+    new_version = bump_version()
+    print(f"\n Bumped to new version: {new_version} \n")
+
     print(
         Fore.GREEN
         + Style.BRIGHT

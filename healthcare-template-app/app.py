@@ -36,11 +36,22 @@ login_manager.init_app(app)
 login_manager.user_loader(load_user)
 
 
+# Versioning
+@app.context_processor
+def inject_version():
+    version_file = "version.txt"
+    with open(version_file, "r") as file:
+        version = file.read().strip()
+    return dict(version=version)
+
+
+# Renew the session before each request
 @app.before_request
 def before_request_func():
     renew_session()
 
 
+# Error handling for 403 Forbidden
 @app.errorhandler(Forbidden)
 def handle_forbidden(e):
     return render_template("403.html"), 403
@@ -49,5 +60,6 @@ def handle_forbidden(e):
 # Non-API Routes for the Flask app using blueprints (pages folder - init.py)
 register_blueprints(app)
 
+# Run the app
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5005)
