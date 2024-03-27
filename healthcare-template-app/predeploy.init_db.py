@@ -8,8 +8,10 @@ from models.models import (
 from werkzeug.security import generate_password_hash
 import secrets  # For generating secure tokens
 
+
 def generate_secure_token():
     return secrets.token_urlsafe()  # Generates a URL-safe text string
+
 
 # Permissions to add
 permissions_to_add = [
@@ -31,6 +33,7 @@ users_to_add = [
     {"username": "hants", "password": "hants"},
     {"username": "john", "password": "john"},
 ]
+
 
 def add_data():
     with app.app_context():
@@ -81,6 +84,7 @@ def add_data():
                 db.session.commit()
 
         print("Database initialized with users and permissions!")
+
 
 if __name__ == "__main__":
     add_data()

@@ -58,7 +58,7 @@
     </div>
 
     <!-- External JavaScript File -->
-    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    <script nonce="{{ csp_nonce() }}" src="{{ url_for('static', filename='js/login.js') }}"></script>
 
 </body>
 </html>

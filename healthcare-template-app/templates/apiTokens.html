@@ -54,7 +54,7 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/apiTokens.js') }}"></script>
+    <script nonce="{{ csp_nonce() }}" src="{{ url_for('static', filename='js/apiTokens.js') }}"></script>
 
 {% endblock %}
 

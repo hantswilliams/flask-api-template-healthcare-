@@ -8,10 +8,11 @@ load_dotenv()
 limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["10 per minute", "1 per second"],
-    storage_uri=os.getenv('REDIS_ENDPOINT'),
-    storage_options={"password": os.getenv('REDIS_PASSWORD')},
-    strategy="fixed-window"
+    storage_uri=os.getenv("REDIS_ENDPOINT"),
+    storage_options={"password": os.getenv("REDIS_PASSWORD")},
+    strategy="fixed-window",
 )
+
 
 def init_app(app):
     limiter.init_app(app)

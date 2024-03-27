@@ -12,18 +12,19 @@ from pages.tests import test_pages
 
 # Add all the Blueprints to a list (or a dictionary, if you prefer)
 blueprints = [
-    (landing_pages, '/'),
-    (token_pages, '/api-token'),
-    (changepassword_pages, '/change_password'),
-    (login_pages, '/login'),
-    (logout_pages, '/logout'),
-    (permission_pages, '/manage-permissions'),
-    (profile_pages, '/profile'),
-    (redoc_pages, '/redoc'),
-    (register_pages, '/register'),
-    (session_time, '/session-time'),
-    (test_pages, '/test'),
+    (landing_pages, "/"),
+    (token_pages, "/api-token"),
+    (changepassword_pages, "/change_password"),
+    (login_pages, "/login"),
+    (logout_pages, "/logout"),
+    (permission_pages, "/manage-permissions"),
+    (profile_pages, "/profile"),
+    (redoc_pages, "/redoc"),
+    (register_pages, "/register"),
+    (session_time, "/session-time"),
+    (test_pages, "/test"),
 ]
+
 
 def register_blueprints(app):
     for blueprint, url_prefix in blueprints:

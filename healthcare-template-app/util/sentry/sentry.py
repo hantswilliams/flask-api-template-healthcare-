@@ -1,9 +1,10 @@
 import sentry_sdk
 from util.sentry.pii_phi import PiiRegex
 from dotenv import load_dotenv
-import os 
+import os
 
 load_dotenv()
+
 
 def before_send(event, hint):
     # Instantiate the PiiRegex object
@@ -26,7 +27,7 @@ def before_send(event, hint):
         return data
 
     # Apply sanitization to event data that could contain sensitive information
-    for section in ['exception', 'logentry', 'message', 'extra']:
+    for section in ["exception", "logentry", "message", "extra"]:
         if section in event:
             event[section] = sanitize_data(event[section])
 
@@ -35,7 +36,7 @@ def before_send(event, hint):
 
 def init_sentry():
     sentry_sdk.init(
-        dsn=os.getenv('SENTRY_DSN'),
+        dsn=os.getenv("SENTRY_DSN"),
         before_send=before_send,
         traces_sample_rate=1.0,
         profiles_sample_rate=1.0,

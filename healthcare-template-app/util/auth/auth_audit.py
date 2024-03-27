@@ -2,6 +2,7 @@
 
 from datetime import datetime
 
+
 def update_login_audit_info(user, ip_address):
     # Shift the current login information to the last login before updating
     user.last_login_at = user.current_login_at
