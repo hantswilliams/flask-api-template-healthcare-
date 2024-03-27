@@ -114,6 +114,10 @@
             </div>
         </div>
 
+
+
+
+
         <div class="container mx-auto p-8">
             <div class="bg-white p-3 rounded shadow-sm">
                 <h3 class="text-xl font-bold mb-4">Existing Users</h3>
@@ -252,10 +256,6 @@
                 .catch(error => console.error('Error fetching users:', error));
         }
 
-        // Call fetchUsers on page load to populate the subjects dropdown
-        document.addEventListener('DOMContentLoaded', fetchUsers);
-
-
         // Function to edit a permission (assumes subject should not be editable based on requirements)
         function editPermission(permissionId) {
             const object = prompt("Enter new object:");
@@ -324,6 +324,40 @@
         document.addEventListener('DOMContentLoaded', fetchPermissions);
 
 
+
+        function fetchAndDisplayUsers() {
+            fetch('/api/users')
+                .then(response => response.json())
+                .then(console.log(response))
+                .then(users => {
+                    const usersListElement = document.getElementById('users-list');
+                    usersListElement.innerHTML = ''; // Clear existing users
+                    users.forEach(user => {
+                        // Create list item for each user
+                        const userItem = document.createElement('li');
+                        userItem.className = 'flex justify-between items-center py-1 px-2';
+                        userItem.innerHTML = `
+                            <span class="text-gray-800">${user.username}</span>
+                            <div class="flex items-center space-x-2">
+                                <button class="editUserBtn bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Change PW</button>
+                                <button class="deleteUserBtn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Delete</button>
+                            `;
+                        
+                        // Append the user item to the list
+                        usersListElement.appendChild(userItem);
+
+                        // Find and attach event listeners to the buttons
+                        const editBtn = userItem.querySelector('.editUserBtn');
+                        const deleteBtn = userItem.querySelector('.deleteUserBtn');
+
+                        editBtn.addEventListener('click', () => editUser(user.id));
+                        deleteBtn.addEventListener('click', () => deleteUser(user.id));
+                    });
+                })
+                .catch(error => console.error('Error fetching users:', error));
+        }
+
+
         function editUser(userId) {
             const newPassword = prompt("Enter new password for user:");
             if (newPassword) {
@@ -344,6 +378,8 @@
         }
 
 
+        // Call fetchUsers on page load to populate the subjects dropdown
+        document.addEventListener('DOMContentLoaded', fetchUsers);
 
     </script>
 

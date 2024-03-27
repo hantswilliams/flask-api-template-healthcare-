@@ -2,6 +2,7 @@ from flask import request, redirect, url_for
 from flask_login import login_required
 from flask_restx import Namespace, Resource
 from models.models import User, db, APIToken
+from util.rate_limiting.rate_limiter import limiter
 from werkzeug.security import generate_password_hash
 
 api = Namespace(
@@ -13,6 +14,7 @@ api = Namespace(
 @api.route("/")
 class Subjects(Resource):
     @login_required
+    @limiter.exempt
     def get(self):
         subjects = [user.username for user in User.query.all()]
         return subjects, 200
