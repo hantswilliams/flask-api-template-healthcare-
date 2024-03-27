@@ -12,7 +12,7 @@ WORKDIR /app/healthcare-template-app/
 
 RUN rm -f /app/healthcare-template-app/instance/app.db
 
-RUN python predploy.init_db.py
+RUN python predeploy.init_db.py
 
 EXPOSE 5005
 
