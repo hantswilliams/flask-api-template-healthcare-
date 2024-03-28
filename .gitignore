@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# Certs and Keys
+cert.pem
+key.pem
+
 # Ruff_cache
 .ruff_cache/
 

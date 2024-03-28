@@ -5,13 +5,12 @@ from models.models import (
     User,
     APIToken,
 )  # Import db, Permission, and User models
+
 from werkzeug.security import generate_password_hash
 import secrets  # For generating secure tokens
 
-
 def generate_secure_token():
     return secrets.token_urlsafe()  # Generates a URL-safe text string
-
 
 # Permissions to add
 permissions_to_add = [

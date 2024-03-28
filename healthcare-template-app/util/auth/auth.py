@@ -1,6 +1,6 @@
 from datetime import datetime
 from functools import wraps
-from flask import request, session
+from flask import request, session, redirect
 from flask_login import current_user
 from flask import current_app  # Import this to access your app's configuration
 from models.models import (
@@ -20,6 +20,16 @@ def renew_session():
     session["expires_at"] = (
         datetime.now() + current_app.config["PERMANENT_SESSION_LIFETIME"]
     ).timestamp()
+
+def https_redirects():
+    if current_app.config.get("ENVIRONMENT") == "PROD" or current_app.config.get("ENVIRONMENT") == "STAGING":
+        scheme = request.headers.get('X-Forwarded-Proto')
+        if scheme and scheme == 'http' and request.url.startswith('http://'):
+            url = request.url.replace('http://', 'https://', 1)
+            code = 301
+            return redirect(url, code=code)
+    elif current_app.config.get("ENVIRONMENT") == "DEV":
+        pass 
 
 
 def validate_password(password, **kwargs):

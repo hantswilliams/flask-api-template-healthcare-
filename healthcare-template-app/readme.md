@@ -1,7 +1,5 @@
-# A secure(ish) Flask application for Healthcare
 
-A brief demo of potential HIPAA / HITRUST items that can be covered in a Flask application.
-This is for demonstration pursposes and learning, showcasing the flexibility of Flask. The template for this flask ask can be found in the `/healthcare-template-app` directory.
+
 
 ## Notes to self: 
 - Pages: 
@@ -27,14 +25,14 @@ This is for demonstration pursposes and learning, showcasing the flexibility of 
 ## ENV file Structure 
 
 The `.env` file should be structured as follows, and found in the root directory of the project. 
-- The PRODUCTION_ENV is used to determine if the app is in production or not. The options are True or False. If you select FALSE, it will use the `configDev.yaml` file. If you select TRUE, it will use the `configProd.yaml` file.
+- The ENVIRONMENT is used to determine if the app is in development, staging, or production. The options are DEV, STAGING, or PROD. As a example, if you select DEV, it will use the `configDev.yaml` file. 
 - The REDIS_ENDPOINT is a dependency for the rate limiter. Recommend using the free tier of RedisLabs.
 - The SENTRY_DSN is used for error logging. It is required. It is free for up to 5000 (?)events per month.
 - The SECRET_KEY is used for the Flask app. It is required.
 - The SQLALCHEMY_DATABASE_URI is used for the database connection. It is required. Currently have only tested with SQLite. Plan on updating with MySQL and PostgreSQL.
 
 ```
-PRODUCTION_ENV = 
+ENVIRONMENT = 
 REDIS_ENDPOINT = 
 SENTRY_DSN = 
 SECRET_KEY = 
@@ -64,40 +62,6 @@ PASSWORD_REQ_SPECIAL: True
 TOKEN_EXPIRATION_DAYS: 7 # days untill the token will expire
 ```
 
-
-## HIPAA / HITRUST items covered in this example app:
-
-1. RBAC - prevents unauthorized access to PHI
-    - With simple dedicated GUI for admin to manage roles-permissions, and users 
-2. 2-Factor Authentication - prevents unauthorized access to PHI
-    - Currently set to Google Authenticators
-3. Session Timeout - prevents unauthorized access to PHI
-    - Currently set to 5 minutes
-4. Session Security:
-    - Session cookie is only allowed over HTTPS (SESSION_COOKIE_SECURE)
-    - Session cookie is only allowed to be accessed by the server (SESSION_COOKIE_HTTPONLY)
-    - Session cookie is only allowd by the server that set it (SESSION_COOKIE_SAMESITE)
-5. Minimum password length and complexity - prevents weak passwords
-    - Currently set to 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
-6. Account lockout - prevents brute force attacks
-    - Currently set to 5 attempts, lockout for `15 minutes`
-7. Login audit trail - tracks who is accessing PHI
-    - Captures IP address, username, and timestamp
-    - Currently part of `User` model table
-8. User activity audit trail - tracks what users are doing with PHI
-    - Captures all endpoints accessed, method, and timestamp
-    - Currently in datatable called `UserActivityLog`
-9. Password expiration - prevents unauthorized access to PHI 
-    - Currently set to 90 days
-10. Overall application monitoring - 
-    - Currently with Sentry.io
-    - Have built in basic RegEx rules to reduce/prevent PHI (or PII) from being logged in Sentry
-11. Rotating API tokens - prevents unauthorized access to PHI
-    - Currently set to 7 days
-    - The config is found in the DB model: `APIToken`
-12. API limiting 
-    - Each end up currently has a set limit of 1 request per second
-    - Can individually set limits for each endpoint
 
 ## Decesions 
 - API is stateless; requires token that is rotated every 7 days, and associated with a users role and permissions 

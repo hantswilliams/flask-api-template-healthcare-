@@ -7,6 +7,7 @@ import yaml
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 def load_configurations(app):
+
     load_dotenv()
 
     # Load environment-based configurations
@@ -16,16 +17,23 @@ def load_configurations(app):
     }
 
     # Determine configuration file based on environment
-    config_file = (
-        "configProd.yaml" if os.getenv("PRODUCTION_ENV") == "True" else "configDev.yaml"
-    )
+    environment = os.getenv("ENVIRONMENT")
+    if environment == "PROD":
+        config_file = "configProd.yaml"
+    elif environment == "STAGING":
+        config_file = "configStaging.yaml"
+    elif environment == "DEV":  
+        config_file = "configDev.yaml"
+    else:  # Default to Development if not specified or recognized
+        config_file = "configDev.yaml"
 
     with open(config_file, "r") as file:
-        print(
-            f'Current Environment: {"Production" if os.getenv("PRODUCTION_ENV") == "True" else "Development"}'
-        )
+        # Determine the environment for the print statement
+        environment = os.getenv("ENVIRONMENT")
+                
+        # Load and print the configuration
         file_config = yaml.safe_load(file)
-        print("Configuration Loaded: ", file_config)
+        print("SUCCESFULLY loaded configuration file: ", file_config)
 
     # Merge file configurations into the app.config
     for key, value in file_config.items():
@@ -92,8 +100,9 @@ def load_talisman(app):
             # Disable CSP and HTTPS enforcement for specific endpoints if necessary
             talisman.content_security_policy = None
             talisman.force_https = False
-        ## if production, enforce HTTPS and CSP
-        if os.getenv("PRODUCTION_ENV") == "True":
+        
+        ## if production, enforce HTTPS and CSP for PROD
+        if current_app.config.get("ENVIRONMENT") == "PROD":
             # Stricter CSP for all other endpoints, enforcing HTTPS and using nonces #"'self'"
             csp = {
                 "default-src": [current_app.config.get("BASE_URL")], 
@@ -104,17 +113,32 @@ def load_talisman(app):
             }
             talisman.content_security_policy = csp
             talisman.content_security_policy_nonce_in = ["script-src"]
-            talisman.force_https = os.getenv("PRODUCTION_ENV") == "True"
+            talisman.force_https = True
 
-            ## this part below is specific, assuming production is in 
-            ## a cloud environment with a load balancer, like google cloud run
-            ## in the future, should modify this part depending on a preference/setting
-            ## of deployment, like a config file
-            app.wsgi_app = ProxyFix(app.wsgi_app) ## SHould be OFF for dev, ON for PROD
+            ## this part below is specific, assuming production is in a cloud environment with a load balancer, like google cloud run
+            app.wsgi_app = ProxyFix(app.wsgi_app) 
 
-        else:
+        ## IF STAGING, enforce HTTPS and CSP for STAGING but not the proxy fix
+        elif current_app.config.get("ENVIRONMENT") == "STAGING":
+            csp = {
+                "default-src": [current_app.config.get("BASE_URL")], 
+                "script-src": [current_app.config.get("BASE_URL")],
+                "style-src": [current_app.config.get("BASE_URL")],
+                "img-src": [current_app.config.get("BASE_URL")],
+                "connect-src": [current_app.config.get("BASE_URL")]
+            }
+            talisman.content_security_policy = csp
+            talisman.content_security_policy_nonce_in = ["script-src"]
+            talisman.force_https = True
+
+        ## IF DEV, disable HTTPS and CSP
+        elif current_app.config.get("ENVIRONMENT") == "DEV":
+            # turn off talisman
             talisman.content_security_policy = None
             talisman.force_https = False
+
+        else:
+            KeyError("Environment not recognized")
 
 def init_configs(app):
     load_configurations(app)

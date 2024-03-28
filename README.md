@@ -1,22 +1,113 @@
-# flask-api-template-healthcare 
+# A Flask API Template That is Security Focused for Healthcare
+
+This is a Flask API Template that can be HIPAA / HITRUST compliant. It is for demonstration pursposes and learning, showcasing the flexibility of Flask. The template for this flask ask can be found in the `/healthcare-template-app` directory.
+
+## Features
+- Security first approach (see HIPAA / HITRUST items covered below)
+- Provide admin/user gui for managing RBAC level permissions and general user management
+- Three different testing environments: DEV, STAGING, PROD
+- Dockerized for easy deployment in production environments 
+
+
+## HIPAA / HITRUST items covered in this example app:
+
+1. RBAC - prevents unauthorized access to PHI
+    - With simple dedicated GUI for admin to manage roles-permissions, and users 
+2. 2-Factor Authentication - prevents unauthorized access to PHI
+    - Currently set to Google Authenticators
+3. Session Timeout - prevents unauthorized access to PHI
+    - Currently set to 5 minutes
+4. Session Security:
+    - Session cookie is only allowed over HTTPS (SESSION_COOKIE_SECURE)
+    - Session cookie is only allowed to be accessed by the server (SESSION_COOKIE_HTTPONLY)
+    - Session cookie is only allowd by the server that set it (SESSION_COOKIE_SAMESITE)
+5. Minimum password length and complexity - prevents weak passwords
+    - Currently set to 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
+6. Account lockout - prevents brute force attacks
+    - Currently set to 5 attempts, lockout for `15 minutes`
+7. Login audit trail - tracks who is accessing PHI
+    - Captures IP address, username, and timestamp
+    - Currently part of `User` model table
+8. User activity audit trail - tracks what users are doing with PHI
+    - Captures all endpoints accessed, method, and timestamp
+    - Currently in datatable called `UserActivityLog`
+9. Password expiration - prevents unauthorized access to PHI 
+    - Currently set to 90 days
+10. Overall application monitoring - 
+    - Currently with Sentry.io
+    - Have built in basic RegEx rules to reduce/prevent PHI (or PII) from being logged in Sentry
+11. Rotating API tokens - prevents unauthorized access to PHI
+    - Currently set to 7 days
+    - The config is found in the DB model: `APIToken`
+12. API limiting 
+    - Each end up currently has a set limit of 1 request per second
+    - Can individually set limits for each endpoint
+
+## Different Environments 
+Currently has three different environments: 1. DEV, 2. PROD, 3. TEST. Each of these environments has a different configuration file (configDev.yaml, configStaging.yaml, configProd.yaml). The `.env` file is used to determine which environment the app is in. Key differences: 
+- DEV: 
+    - All security features are turned off
+    - The app is in debug mode
+    - The app is not using HTTPS
+    - 2 factor is off for testing purposes
+- STAGING: 
+    - All security features are turned on
+    - The app is in debug mode
+    - The app is using a local self-signed HTTPS (e.g., just agree to the warning message to proceed)
+    - 2 factor is off for testing purposes
+- PROD:
+    - All security features are turned on
+    - The app is not in debug mode
+    - The app is using HTTPS
+    - 2 factor is on
 
 ## Quick start
-
-### Local Development without docker:
+### Local DEV:
+- Step 1: Inside the route folder of the project where the requirements.txt file is located
     - `python3 -m venv venv` or `python -m venv venv`
     - `source venv/bin/activate`
     - `pip install -r requirements.txt`
-    - update the `.env` file with the necessary information
-    - update the `configDev.yaml` file with the necessary information if you want it changed
-    - CD into the `healthcare-template-app` directory
-    - `python3 init_db.py` or `python init_db.py`
-    - `python3 app.py` or `python app.py`
+- Step 2: Rename `.env.template` to `.env` file, set ENVIRONMENT to `DEV` 
+- Step 3: If you want to change anything within the dev environment, open up `healthcare-template-app/configDev.yaml` and make your changes
+- Step 4: Change director to current working directory or CD into `healthcare-template-app` then run:
+    - `python3 init_db.py` or `python init_db.py` to initialize the database
+    - `python3 app.py` or `python app.py` to start the app on `http:\\localhost:5005`
 
-### Local Development with docker:
+### Local STAGING: 
+- Step 1: Same as DEV env 
+- Step 2: Rename `.env.template` to `.env` file, set ENVIRONMENT to `STAGING`
+- Step 3: Create locally signed SSL certificates
+    - CD into the `healthcare-template-app/certificate` folder
+    - In your terminal: `openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365` 
+    - This should result in a `cert.pem` and `key.pem` file which are ignored by git
+- Step 4: If you want to change anything within the dev environment, open up `healthcare-template-app/configStaging.yaml` and make your changes
+- Step 5: Change director to current working directory or CD into `healthcare-template-app` then run:
+    - `python3 init_db.py` or `python init_db.py` to initialize the database
+    - `python3 app.py` or `python app.py` to start the app on `https:\\localhost:5005`
+
+### Production: 
+- Step 1: Recommend using docker for production and first testing in dev and staging environments 
+- Step 2: Rename `.env.template` to `.env` file, set ENVIRONMENT to `PROD`
+- Step 3: Update `BASE_URL` in `healthcare-template-app/configProd.yaml` to the correct URL of your production server
+- Step 4: Build the docker image, navigate in terminal to root folder of the project where `Dockerfile` is located and run: 
     - `docker buildx build --platform linux/amd64 -t flaskhealth .` 
-    - `docker run -p 5010:5005 flaskhealth`
-    - open up a browser and go to `http://localhost:5010/`
+    - `docker run -p 5005:5005 flaskhealth`
+    - Make sure it works as expected
+- Step 5: Deploy the docker image to docker hub or your preferred container registry
+    - `docker tag flaskhealth:latest <your-docker-username>/flaskhealth:latest`
+    - `docker push <your-docker-username>/flaskhealth:latest`
+- Step 6: Deploy the docker image to your production server
+    - Example with Google Cloud Run service with GUI:  
+        - Login to Google Cloud Console
+        - Navigate to Cloud Run
+        - Click on `Create Service`
+        - Select the container registry where the image is located
+        - Select the image
+        - Set the port to 5005
+        - Set the environment variables (copy from `.env` file)
+        - Click `Create` and wait for the service to deploy
 
+---
 
 ## To do
 - Need to think about only RBAC for the API endpoints, since this is more of a API thing, but then that might be to resctive, might be nice to have RBAC for admin related pages as well in case want more control
