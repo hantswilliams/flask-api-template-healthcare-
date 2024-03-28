@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from models.models import db
 from util.auth.auth import validate_password, log_user_activity
@@ -36,7 +36,8 @@ def change_password():
                 db.session.commit()
                 message = "Password successfully changed."
                 message_type = "success"
-                return redirect("/login")  # Redirect after successful password change
+                return redirect(current_app.config['BASE_URL'] + url_for("login_pages.login"), 302)
+                # return redirect("/login")  # Redirect after successful password change
 
     # Pass the message and message_type to the template
     return render_template(

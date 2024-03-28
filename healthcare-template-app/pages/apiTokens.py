@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template
+from flask import Blueprint, render_template, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from models.models import db, APIToken
 
@@ -37,4 +37,5 @@ def generate_api_token():
 
     db.session.commit()
 
-    return redirect("/api-token")
+    return redirect(current_app.config['BASE_URL'] + url_for("token_pages.api-token"), 302)
+    # return redirect("/api-token")

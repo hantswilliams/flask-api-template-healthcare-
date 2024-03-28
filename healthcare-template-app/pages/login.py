@@ -24,7 +24,7 @@ def login():
 
     if current_user.is_authenticated:
         return redirect(
-            url_for("profile_pages.profile")
+            url_for(current_app.config['BASE_URL'] + "profile_pages.profile"), 302
         )  # Redirect to the profile page if already logged in
 
     if request.method == "GET":
@@ -56,7 +56,10 @@ def login():
 
         if password_age > timedelta(days=90):
             login_user(user)
-            return jsonify({"success": True, "redirect": url_for("change_password")})
+            return jsonify({
+                "success": True, 
+                "redirect": current_app.config['BASE_URL'] + url_for("change_password")
+                })
 
         elif password_age < timedelta(days=90) and not twoFactor:
             update_login_audit_info(user, request.remote_addr)
@@ -64,7 +67,10 @@ def login():
             db.session.commit()
             login_user(user)
             return jsonify(
-                {"success": True, "redirect": url_for("profile_pages.profile")}
+                {
+                    "success": True, 
+                    "redirect": current_app.config['BASE_URL'] + url_for("profile_pages.profile")
+                }
             )
 
         elif twoFactor and pyotp.TOTP(user.otp_secret).verify(token):
@@ -73,7 +79,10 @@ def login():
             db.session.commit()
             login_user(user)
             return jsonify(
-                {"success": True, "redirect": url_for("profile_pages.profile")}
+                {
+                    "success": True, 
+                    "redirect": current_app.config['BASE_URL'] + url_for("profile_pages.profile")
+                }
             )
 
         else:

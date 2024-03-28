@@ -1,4 +1,4 @@
-from flask import request, redirect, url_for
+from flask import request, redirect, url_for, current_app
 from flask_login import login_required
 from flask_restx import Namespace, Resource
 from models.models import User, db, APIToken
@@ -43,7 +43,7 @@ class AddUser(Resource):
         new_user = User.query.filter_by(username=username).first()
         ## then create the token
         APIToken.create_token(new_user.id, new_user.username)
-        return redirect(url_for("permission_pages.permissions_view"))
+        return redirect(current_app.config['BASE_URL'] + url_for("permission_pages.permissions_view"), 302)
 
 
 ## TO UPDATE: edit users, should also move to a namespace in the api folder
@@ -56,7 +56,7 @@ class EditUser(Resource):
         new_password = request.form.get("new_password")
         user.password = generate_password_hash(new_password)
         db.session.commit()
-        return redirect(url_for("permission_pages.permissions_view"))
+        return redirect(current_app.config['BASE_URL'] + url_for("permission_pages.permissions_view"), 302)
 
 
 # ## TO UPDATE: delete users, should also move to a namespace in the api folder
@@ -67,4 +67,4 @@ class DeleteUser(Resource):
         user = User.query.get_or_404(user_id)
         db.session.delete(user)
         db.session.commit()
-        return redirect(url_for("permission_pages.permissions_view"))
+        return redirect(current_app.config['BASE_URL'] + url_for("permission_pages.permissions_view"), 302)

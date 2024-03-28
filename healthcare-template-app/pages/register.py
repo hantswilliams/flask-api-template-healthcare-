@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, current_app
 from models.models import db, APIToken
 import pyotp
 import pyqrcode
@@ -33,7 +33,7 @@ def register():
         user = User.query.filter_by(username=username).first()
         APIToken.create_token(user.id, user.username)
 
-        return redirect(url_for("register_pages.twofa", user_id=user.id))
+        return redirect(url_for(current_app.config['BASE_URL'] + "register_pages.twofa", user_id=user.id))
 
     return render_template("registration.html")
 
