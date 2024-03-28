@@ -19,7 +19,10 @@
 
 
 ## To do
-- Now need to go in add in the linting (black? or the new rust one?)
+- Need to think about only RBAC for the API endpoints, since this is more of a API thing, but then that might be to resctive, might be nice to have RBAC for admin related pages as well in case want more control
+- SOMEWHAT DONE - Now need to go in add in the linting (black? or the new rust one?)
+    - need to fix it though, it appears it messes up the formatting, sometimes causes errors 
+    - currently commement out in `/healthcare-template-app/predeploy.codechecks.py` 
 - Now need to go in add in the testing (pytest)
 - Now need to go in add the security checks of dependencies (safety, bandit, etc)
 

@@ -26,10 +26,10 @@ init_configs(app)
 init_sentry()
 init_limiter(app)
 
-# #### TESTING SECTION
-app.config["PREFERRED_URL_SCHEME"] = "https"
-app.config['BASE_URL'] = os.getenv("PROD_URL_HTTPS")
-app.wsgi_app = ProxyFix(app.wsgi_app)
+# #### TESTING SECTION ## Should move this to CONFIG / LOADER in FUTURE
+app.config["PREFERRED_URL_SCHEME"] = "https" ## Should be set in ENV/CONFIG
+app.config['BASE_URL'] = os.getenv("PROD_URL_HTTPS") ## Should be set in ENV/CONFIG 
+app.wsgi_app = ProxyFix(app.wsgi_app) ## SHould be OFF for dev, ON for PROD
 
 # Initialize the API endpoints
 api.init_app(app)

@@ -37,5 +37,5 @@ def generate_api_token():
 
     db.session.commit()
 
-    return redirect(current_app.config['BASE_URL'] + url_for("token_pages.api-token"), 302)
+    return redirect(current_app.config['BASE_URL'] + url_for("token_pages.my_api_token"), 302)
     # return redirect("/api-token")

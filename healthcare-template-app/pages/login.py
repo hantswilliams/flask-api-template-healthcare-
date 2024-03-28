@@ -24,7 +24,7 @@ def login():
 
     if current_user.is_authenticated:
         return redirect(
-            url_for(current_app.config['BASE_URL'] + "profile_pages.profile"), 302
+            url_for("profile_pages.profile"), 302
         )  # Redirect to the profile page if already logged in
 
     if request.method == "GET":
@@ -58,7 +58,7 @@ def login():
             login_user(user)
             return jsonify({
                 "success": True, 
-                "redirect": current_app.config['BASE_URL'] + url_for("change_password")
+                "redirect": url_for("change_password")
                 })
 
         elif password_age < timedelta(days=90) and not twoFactor:
@@ -69,7 +69,7 @@ def login():
             return jsonify(
                 {
                     "success": True, 
-                    "redirect": current_app.config['BASE_URL'] + url_for("profile_pages.profile")
+                    "redirect": url_for("profile_pages.profile")
                 }
             )
 
@@ -81,7 +81,7 @@ def login():
             return jsonify(
                 {
                     "success": True, 
-                    "redirect": current_app.config['BASE_URL'] + url_for("profile_pages.profile")
+                    "redirect":  url_for("profile_pages.profile")
                 }
             )
 
