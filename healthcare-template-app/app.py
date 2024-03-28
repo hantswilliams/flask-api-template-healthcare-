@@ -4,14 +4,12 @@ from flask import Flask, render_template, request, redirect
 from flask_login import LoginManager
 import logging
 from models.models import db
-import os 
 from pages import register_blueprints  # Import the register_blueprints function
 from util.auth.auth import load_user, renew_session
 from util.config.loader import init_configs
 from util.rate_limiting.rate_limiter import init_app as init_limiter
 from util.sentry.sentry import init_sentry
 from werkzeug.exceptions import Forbidden
-from werkzeug.middleware.proxy_fix import ProxyFix
 
 load_dotenv()
 
@@ -27,9 +25,9 @@ init_sentry()
 init_limiter(app)
 
 # #### TESTING SECTION ## Should move this to CONFIG / LOADER in FUTURE
-app.config["PREFERRED_URL_SCHEME"] = "https" ## Should be set in ENV/CONFIG
-app.config['BASE_URL'] = os.getenv("PROD_URL_HTTPS") ## Should be set in ENV/CONFIG 
-app.wsgi_app = ProxyFix(app.wsgi_app) ## SHould be OFF for dev, ON for PROD
+# app.config["PREFERRED_URL_SCHEME"] = "https" ## Should be set in ENV/CONFIG
+# app.config['BASE_URL'] = os.getenv("PROD_URL_HTTPS") ## Should be set in ENV/CONFIG 
+# app.wsgi_app = ProxyFix(app.wsgi_app) ## SHould be OFF for dev, ON for PROD
 
 # Initialize the API endpoints
 api.init_app(app)

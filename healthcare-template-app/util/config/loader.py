@@ -1,10 +1,10 @@
 from dotenv import load_dotenv
 from datetime import timedelta
-from flask import request
+from flask import request, current_app
 from flask_talisman import Talisman
 import os
 import yaml
-
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 def load_configurations(app):
     load_dotenv()
@@ -92,19 +92,29 @@ def load_talisman(app):
             # Disable CSP and HTTPS enforcement for specific endpoints if necessary
             talisman.content_security_policy = None
             talisman.force_https = False
-        else:
+        ## if production, enforce HTTPS and CSP
+        if os.getenv("PRODUCTION_ENV") == "True":
             # Stricter CSP for all other endpoints, enforcing HTTPS and using nonces #"'self'"
             csp = {
-                "default-src": [os.getenv("PROD_URL_HTTPS")], 
-                "script-src": [os.getenv("PROD_URL_HTTPS")],
-                "style-src": [os.getenv("PROD_URL_HTTPS")],
-                "img-src": [os.getenv("PROD_URL_HTTPS")],
-                "connect-src": [os.getenv("PROD_URL_HTTPS")]
+                "default-src": [current_app.config.get("BASE_URL")], 
+                "script-src": [current_app.config.get("BASE_URL")],
+                "style-src": [current_app.config.get("BASE_URL")],
+                "img-src": [current_app.config.get("BASE_URL")],
+                "connect-src": [current_app.config.get("BASE_URL")]
             }
             talisman.content_security_policy = csp
             talisman.content_security_policy_nonce_in = ["script-src"]
             talisman.force_https = os.getenv("PRODUCTION_ENV") == "True"
 
+            ## this part below is specific, assuming production is in 
+            ## a cloud environment with a load balancer, like google cloud run
+            ## in the future, should modify this part depending on a preference/setting
+            ## of deployment, like a config file
+            app.wsgi_app = ProxyFix(app.wsgi_app) ## SHould be OFF for dev, ON for PROD
+
+        else:
+            talisman.content_security_policy = None
+            talisman.force_https = False
 
 def init_configs(app):
     load_configurations(app)

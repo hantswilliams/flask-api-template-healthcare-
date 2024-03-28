@@ -1,3 +1,7 @@
+# Request Protocols
+PREFERRED_URL_SCHEME: https
+BASE_URL: https://flaskhealth-ua432tkhwq-uc.a.run.app
+
 # Sessions/Cookies
 PERMANENT_SESSION_LIFETIME: 15  # number in minutes; this is how long the session will last
 REMEMBER_COOKIE_DURATION: 7 # number of DAYS to remember the user
