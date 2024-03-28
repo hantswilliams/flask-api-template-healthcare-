@@ -126,7 +126,8 @@
                     <li class="flex justify-between items-center py-1 px-2">
                         <span class="text-gray-800">{{ user.username }}</span>
                         <div class="flex items-center space-x-2">
-                            <button onclick="editUser('{{ user.id }}')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Change PW</button>
+                            <!-- <button onclick="editUser('{{ user.id }}')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Change PW</button> -->
+                            <button data-user-id="{{ user.id }}" class="edit-user-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Change PW</button>
                             <form action="/api/users/delete-user/{{ user.id }}" method="post">
                                 <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Delete</button>
                             </form>
@@ -165,7 +166,6 @@
     <script nonce="{{ csp_nonce() }}">
 
         // Function to fetch and display permissions
-
         function fetchPermissions() {
             fetch('/api/permissions')
                 .then(response => response.json())
@@ -320,48 +320,19 @@
             .catch(error => console.error('Error posting permission:', error));
         });
 
-        // Fetch and display existing permissions when the page loads
-        document.addEventListener('DOMContentLoaded', fetchPermissions);
+        // Edit user event delegation
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.className.includes('edit-user-btn')) {
+                const userId = e.target.getAttribute('data-user-id');
+                editUser(userId);
+            }
+        });
 
-
-
-        function fetchAndDisplayUsers() {
-            fetch('/api/users')
-                .then(response => response.json())
-                .then(console.log(response))
-                .then(users => {
-                    const usersListElement = document.getElementById('users-list');
-                    usersListElement.innerHTML = ''; // Clear existing users
-                    users.forEach(user => {
-                        // Create list item for each user
-                        const userItem = document.createElement('li');
-                        userItem.className = 'flex justify-between items-center py-1 px-2';
-                        userItem.innerHTML = `
-                            <span class="text-gray-800">${user.username}</span>
-                            <div class="flex items-center space-x-2">
-                                <button class="editUserBtn bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Change PW</button>
-                                <button class="deleteUserBtn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Delete</button>
-                            `;
-                        
-                        // Append the user item to the list
-                        usersListElement.appendChild(userItem);
-
-                        // Find and attach event listeners to the buttons
-                        const editBtn = userItem.querySelector('.editUserBtn');
-                        const deleteBtn = userItem.querySelector('.deleteUserBtn');
-
-                        editBtn.addEventListener('click', () => editUser(user.id));
-                        deleteBtn.addEventListener('click', () => deleteUser(user.id));
-                    });
-                })
-                .catch(error => console.error('Error fetching users:', error));
-        }
-
-
+        // Function to edit a user's password
         function editUser(userId) {
             const newPassword = prompt("Enter new password for user:");
             if (newPassword) {
-                // Assuming you have a hidden form for editing user passwords
+
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = `/api/users/edit-user/${userId}`;
@@ -377,9 +348,11 @@
             }
         }
 
-
+        // Fetch and display existing permissions when the page loads
+        document.addEventListener('DOMContentLoaded', fetchPermissions);
         // Call fetchUsers on page load to populate the subjects dropdown
         document.addEventListener('DOMContentLoaded', fetchUsers);
+
 
     </script>
 

@@ -95,11 +95,11 @@ def load_talisman(app):
         else:
             # Stricter CSP for all other endpoints, enforcing HTTPS and using nonces
             csp = {
-                "default-src": "'self'",
-                "script-src": ["'self'", "'unsafe-inline'"],
-                "style-src": "'self'",
-                "img-src": "'self'",
-                "connect-src": ["'self'", os.getenv("PROD_URL_HTTPS")],
+                "default-src": ["'self'", os.getenv("PROD_URL_HTTPS"), os.getenv("PROD_URL_HTTP")],
+                "script-src": ["'self'", os.getenv("PROD_URL_HTTPS"), os.getenv("PROD_URL_HTTP")],
+                "style-src": ["'self'", os.getenv("PROD_URL_HTTPS"), os.getenv("PROD_URL_HTTP")],
+                "img-src": ["'self'", os.getenv("PROD_URL_HTTPS"), os.getenv("PROD_URL_HTTP")],
+                "connect-src": ["'self'", os.getenv("PROD_URL_HTTPS"), os.getenv("PROD_URL_HTTP")],
             }
             talisman.content_security_policy = csp
             talisman.content_security_policy_nonce_in = ["script-src"]

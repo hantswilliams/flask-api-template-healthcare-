@@ -24,11 +24,10 @@ init_configs(app)
 init_sentry()
 init_limiter(app)
 
-#### TESTING SECTION
-app.config["PREFERRED_URL_SCHEME"] = "https"
-from werkzeug.middleware.proxy_fix import ProxyFix
-
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+# #### TESTING SECTION
+# app.config["PREFERRED_URL_SCHEME"] = "https"
+# from werkzeug.middleware.proxy_fix import ProxyFix
+# app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Initialize the API endpoints
 api.init_app(app)
