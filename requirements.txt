@@ -2,7 +2,6 @@ Flask
 Flask-Login 
 Flask-Limiter
 redis 
-casbin
 requests
 python-dotenv
 click

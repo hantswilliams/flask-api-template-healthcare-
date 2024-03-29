@@ -1,6 +1,0 @@
-p, alice, /data, GET
-p, hants, /data, GET
-p, hants, /manage-permissions, GET
-p, hants, /manage-permissions, POST
-p, janet, /data, GET
-p, john, /data, GET

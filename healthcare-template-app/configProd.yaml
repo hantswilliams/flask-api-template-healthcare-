@@ -21,5 +21,5 @@ PASSWORD_REQ_SPECIAL: True
 TOKEN_EXPIRATION_DAYS: 7 # days untill the token will expire
 
 # 2FA Required 
-TWO_FACTOR_AUTH_REQUIRED: False
+TWO_FACTOR_AUTH_REQUIRED: True
 
