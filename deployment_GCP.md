@@ -8,7 +8,7 @@
 ## Utilization Cloud Run
 - Prequests:
     - Need to push image to a registry, like docker hub 
-        - e.g., `docker buildx build --platform linux/amd64 -t flaskhealth .` # this is important for building on a M1/M2 processor, also makes it easier to run on cloud based services that will be running a linux varient  
+        - e.g., `docker buildx build --platform linux/amd64 -f Dockerfile.Prod -t flaskhealth .` # this is important for building on a M1/M2 processor, also makes it easier to run on cloud based services that will be running a linux varient  
             - or with custom named Dockerfile.Prod:
                 - e.g., `docker buildx build --platform linux/amd64 -f Dockerfile.Prod -t flaskhealth .`
         - e.g., `docker tag flaskhealth hants/flaskhealth:V0.0.X`
