@@ -108,7 +108,7 @@ Currently has three different environments: 1. DEV, 2. PROD, 3. TEST. Each of th
 - Step 2: Rename `.env.template` to `.env` file, set ENVIRONMENT to `PROD`
 - Step 3: Update `BASE_URL` in `healthcare-template-app/configProd.yaml` to the correct URL of your production server
 - Step 4: Build the docker image, navigate in terminal to root folder of the project where `Dockerfile` is located and run: 
-    - `docker buildx build --platform linux/amd64 -t flaskhealth .` 
+    - `docker buildx build --platform linux/amd64 -f Dockerfile.Prod -t flaskhealth .` 
     - `docker run -p 5005:5005 flaskhealth`
     - Make sure it works as expected
 - Step 5: Deploy the docker image to docker hub or your preferred container registry
