@@ -25,7 +25,7 @@ def register():
 
         # Continue with user creation if the password is valid
         # Remember to hash the password before storing it
-        user = User(username=username, password=generate_password_hash(password))
+        user = User(username=username, password=generate_password_hash(password, method="pbkdf2:sha256"))
         db.session.add(user)
         db.session.commit()
 

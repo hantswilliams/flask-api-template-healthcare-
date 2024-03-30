@@ -14,6 +14,14 @@ def generate_secure_token():
 
 # Permissions to add
 permissions_to_add = [
+    ("admin", "/manage-permissions/", "GET"),
+    ("admin", "/manage-permissions/", "POST"),
+    ("admin", "/manage-permissions/", "PUT"),
+    ("admin", "/manage-permissions/", "DELETE"),
+    ("admin", "/api/permissions/", "GET"),
+    ("admin", "/api/permissions/", "POST"),
+    ("admin", "/api/permissions/", "PUT"),
+    ("admin", "/api/permissions/", "DELETE"),
     ("alice", "/manage-permissions/", "GET"),
     ("alice", "/manage-permissions/", "POST"),
     ("alice", "/manage-permissions/", "PUT"),
@@ -26,13 +34,9 @@ permissions_to_add = [
 
 # Users to add
 users_to_add = [
+    {"username": "admin", "password": "admin"},
     {"username": "alice", "password": "alice"},
-    {"username": "bob", "password": "bob"},
-    {"username": "cathy", "password": "cathy"},
-    {"username": "hants", "password": "hants"},
-    {"username": "john", "password": "john"},
 ]
-
 
 def add_data():
     with app.app_context():
@@ -45,7 +49,9 @@ def add_data():
             if not User.query.filter_by(
                 username=username
             ).first():  # Check if user already exists
-                hashed_password = generate_password_hash(password)  # Hash the password
+                hashed_password = generate_password_hash(password, method="pbkdf2:sha256")
+                print("Length of hashed password:", len(hashed_password))
+                print("Hashed password: ", hashed_password)
                 new_user = User(username=username, password=hashed_password)
                 db.session.add(new_user)
                 db.session.commit()

@@ -19,3 +19,4 @@ flask-talisman
 ruff
 colorama
 pyopenssl
+pymysql

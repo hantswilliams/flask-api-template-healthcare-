@@ -2,22 +2,19 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from datetime import datetime, timedelta
+from sqlalchemy.dialects.mysql import LONGTEXT
 import secrets
 import base64
 import os
 
-## get token expiration time from environment variable
-# TOKEN_EXPIRATION_TIME = os.getenv('TOKEN_EXPIRATION_TIME')
-
 db = SQLAlchemy()
-
-
 class User(db.Model, UserMixin):
     id = db.Column(
         db.Integer, primary_key=True
     )  # primary keys are required by SQLAlchemy
     username = db.Column(db.String(80), unique=True, nullable=False)  # unique username
-    password = db.Column(db.String(100), nullable=False)  # password
+    # password = db.Column(db.String(500), nullable=False)  # password
+    password = db.Column(db.String(255), nullable=False)
     password_changed_at = db.Column(db.DateTime, default=datetime.now(), nullable=False)
     otp_secret = db.Column(db.String(16), nullable=True)  # 2FA secret
     failed_login_attempts = db.Column(
