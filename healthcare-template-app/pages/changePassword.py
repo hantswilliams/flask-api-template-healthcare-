@@ -36,7 +36,7 @@ def change_password():
                 db.session.commit()
                 message = "Password successfully changed."
                 message_type = "success"
-                return redirect(current_app.config['BASE_URL'] + url_for("login_pages.login"), 302)
+                return redirect(url_for("login_pages.login"), 302)
                 # return redirect("/login")  # Redirect after successful password change
 
     # Pass the message and message_type to the template
