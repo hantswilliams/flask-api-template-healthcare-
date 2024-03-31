@@ -2,10 +2,12 @@
 <html>
   <head>
     <title>ReDoc</title>
-    <script nonce="{{ csp_nonce() }}" src="{{ url_for('static', filename='js/redoc.standalone.js') }}"></script>
   </head>
   <body>
-    <redoc spec-url='/api/swagger.json'></redoc>
+
+    <script nonce="{{ csp_nonce() }}" src="{{ url_for('static', filename='js/redoc.standalone.js') }}"></script>
+    
+    <redoc nonce="{{ csp_nonce() }}" spec-url='/api/swagger.json'></redoc>
 
     <script nonce="{{ csp_nonce() }}">
       Redoc.init('/api/swagger.json')
@@ -15,3 +17,5 @@
 
 
 </html>
+
+

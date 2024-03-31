@@ -96,13 +96,15 @@ def load_talisman(app):
         if request.endpoint in [
             "redoc_pages.redoc",
             "swagger_ui.swagger_ui",
-        ] or request.path.startswith("/swagger"):
-            # Disable CSP and HTTPS enforcement for specific endpoints if necessary
+        ] or request.path.startswith("/swagger") or request.path.startswith("/redoc"):
+            print("Talisman CSP and HTTPS enforcement disabled for this endpoint - SWAGGER or REDOC")
             talisman.content_security_policy = None
             talisman.force_https = False
+            talisman.content_security_policy_nonce_in = ["script-src"]
+        
         
         ## if production, enforce HTTPS and CSP for PROD
-        if current_app.config.get("ENVIRONMENT") == "PROD":
+        elif current_app.config.get("ENVIRONMENT") == "PROD":
             # Stricter CSP for all other endpoints, enforcing HTTPS and using nonces #"'self'"
             csp = {
                 "default-src": [current_app.config.get("BASE_URL")], 
@@ -139,6 +141,13 @@ def load_talisman(app):
 
         else:
             KeyError("Environment not recognized")
+
+    # @app.after_request
+    # def apply_csp_overrides(response):
+    #     if request.endpoint in ["redoc_pages.redoc", "swagger_ui.swagger_ui"] or request.path.startswith("/swagger") or request.path.startswith("/redoc"):
+    #         response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'nonce-{0}'; style-src 'self' 'unsafe-inline'".format(request.csp_nonce)
+    #     return response
+            
 
 def init_configs(app):
     load_configurations(app)
