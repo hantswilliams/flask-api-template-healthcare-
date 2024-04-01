@@ -1,0 +1,11 @@
+api/users.py:1:47: F401 [*] `flask.current_app` imported but unused
+models/models.py:5:39: F401 [*] `sqlalchemy.dialects.mysql.LONGTEXT` imported but unused
+pages/apiTokens.py:1:66: F401 [*] `flask.current_app` imported but unused
+pages/changePassword.py:2:75: F401 [*] `flask.current_app` imported but unused
+pages/logout.py:1:40: F401 [*] `flask.url_for` imported but unused
+pages/register.py:1:75: F401 [*] `flask.current_app` imported but unused
+predeploy.codechecks.py:4:8: F401 [*] `os` imported but unused
+predeploy.codechecks.py:5:8: F401 [*] `re` imported but unused
+predeploy.codechecks.py:6:8: F401 [*] `fnmatch` imported but unused
+Found 9 errors.
+[*] 9 fixable with the `--fix` option.

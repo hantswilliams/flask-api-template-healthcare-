@@ -56,7 +56,12 @@ Lastly, this is a flask app that was built for simplicity, but still has some ad
 13. Content Security Policy (CSP) - prevents XSS attacks
     - Currently set to `default-src 'self'` 
     - Can be modified in the `util/config/loader.py` file
-14. .....and more coming soon
+14. Pre-deploy checks 
+    - `predeploy.codechecks.py` can be run before running the app to check for any potential issues: 
+        - **RUFF** for linting/code quality 
+        - **SAFETY** for security vulnerabilities in dependencies
+        - **BANDIT** for security vulnerabilities in the code
+15. .....and more coming soon
 
 ## Different Environments 
 Currently has three different environments: 1. DEV, 2. PROD, 3. TEST. Each of these environments has a different configuration file (configDev.yaml, configStaging.yaml, configProd.yaml). The `.env` file is used to determine which environment the app is in. Key differences: 
@@ -131,9 +136,8 @@ Currently has three different environments: 1. DEV, 2. PROD, 3. TEST. Each of th
 ---
 
 ## To do
-1) Update RUFF linting, currently commement out in `/healthcare-template-app/predeploy.codechecks.py` 
-2) Add in unit testing (pytest) to predeploy checks
-3) (partially done, added in safety) - Need to go in add the security checks of dependencies (safety, bandit, etc)
+1) Add in unit testing (pytest) to predeploy checks
+
 
 ## HIPAA:
 
