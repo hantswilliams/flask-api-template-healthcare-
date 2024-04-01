@@ -1,18 +1,32 @@
 # A Flask API Security Focused Template for Healthcare
 
+<!-- create div component with 3 images -->
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+    <div style="flex: 1 0 40%; max-width: 40%;">
+        <img src="./images/landing.png" style="width: 100%; height: auto;">
+    </div>
+    <div style="flex: 1 0 40%; max-width: 40%;">
+        <img src="./images/admin.png" style="width: 100%; height: auto;">
+    </div>
+    <div style="flex: 1 0 40%; max-width: 40%;">
+        <img src="./images/swagger.png" style="width: 100%; height: auto;">
+    </div>
+    <!-- Add another image here if you want a complete 2x2 grid -->
+</div>
+
 This is a Flask API Template that can be HIPAA / HITRUST compliant. It is for demonstration pursposes and learning, showcasing the flexibility of Flask. The template for this flask ask can be found in the `/healthcare-template-app` directory.
 
-I decided to make this repo to first helpmyself learn more about how to implement common required security features for HIPAA / HITRUST compliance, and second to help others who are looking to build a HIPAA / HITRUST compliant application learn how to do so.
+I decided to make this repo to first help myself better understand how to implement common required security features for HIPAA / HITRUST compliance, and then second to help others who are looking to build and learn.
 
-The app application takes some inspirtation from the Next.js framework, with the idea of having a `pages` folder that contains all of the relevant code for the HTML template pages, which for this flask tempate serve as a set of administrative pages with a basic GUI styled with Tailwind. While the `api` folder contains all of the relevant code for the API endpoints. We have utilized Flask Blueprints for the HTML pages, and Flask RestX for the API endpoints. 
+The app application takes some inspirtation from the Next.js framework, if you are familiar with it, they have the idea of having a `pages` folder that contains all of the relevant code for the HTML template pages. Even though this is a API focused template, it includes a set of administrative pages with a very basic user interfaced styled with Tailwind. Then most importantly, the `api` folder contains all of the relevant code for the API endpoints. We have utilized Flask Blueprints for the HTML pages, and Flask RestX for the API endpoints. 
 
-The app is designed to become HIPAA / HITRUST compliant. It is important to note a few important things: 
+The app is designed to become HIPAA / HITRUST compliant, it is not currently, and never fully will. This is because: 
 
-1. Many of the requirements to become compliant, go beyond technology and involve human  with a focus on security. 
-2. This does not address the infastructure requirements for HIPAA / HITRUST compliance, such as the need for a BAA with your cloud provider, disaster recovery plan, monitoring and logging of the instrastructure, required encryption, etc.
-3. This is a template, and should not be used as a final product without further review and testing.
+1. Many of the requirements to become HIPAA/HITRUST compliant, go beyond technology, and involve human training. It is impossible to make a technology fully compliant without the human element. This is why the app is a template, and not a final product.
 
-Lastly, this is a flask app that was built for simplicity, but still has some advanced features. It is not meant to be a full production ready app, but rather a starting point for building a more complex application. It is up to you to determine what you want to keep, remove, or modify. 
+2. In addition, This does not address the infastructure requirements for HIPAA / HITRUST compliance, such as the need for a BAA with your cloud provider, disaster recovery plan, monitoring and logging of the instrastructure, required encryption, etc. Many of the major cloud providers have services that can help with this, but it is up to you to configure and implement them properly. 
+
+3. Lastly, this is a flask app that was built for simplicity, but still has some advanced features. It is not meant to be a full production ready app, but rather a starting point for building a more complex application. It is up to you to determine what you want to keep, remove, or modify.  
 
 ## Overall Features
 - Security first approach (see HIPAA / HITRUST items covered below)
@@ -66,19 +80,19 @@ Lastly, this is a flask app that was built for simplicity, but still has some ad
 ## Different Environments 
 Currently has three different environments: 1. DEV, 2. PROD, 3. TEST. Each of these environments has a different configuration file (configDev.yaml, configStaging.yaml, configProd.yaml). The `.env` file is used to determine which environment the app is in. Key differences: 
 
-- DEV: 
+- **DEV**: 
     - All security features are turned off
     - The app is in debug mode
     - The app is not using HTTPS
     - 2 factor is off for testing purposes
 
-- STAGING: 
+- **STAGING**: 
     - All security features are turned on
     - The app is in debug mode
     - The app is using a local self-signed HTTPS (e.g., just agree to the warning message to proceed)
     - 2 factor is off for testing purposes
 
-- PROD:
+- **PROD**:
     - All security features are turned on
     - The app is not in debug mode
     - The app is using HTTPS
