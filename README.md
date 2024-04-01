@@ -123,7 +123,7 @@ Next is a quick start guide for getting the app quickly running in the developme
     - `python3 init_db.py` or `python init_db.py` to initialize the database
     - `python3 app.py` or `python app.py` to start the app on `https:\\localhost:5005`
 
-### Remote: PROD: 
+### Remote: PROD: with GCP Cloud Run: 
 - Step 1: Recommend using docker for production and first testing in dev and staging environments 
 - Step 2: Rename `.env.template` to `.env` file, set ENVIRONMENT to `PROD`
 - Step 3: Update `BASE_URL` in `healthcare-template-app/configProd.yaml` to the correct URL of your production server
