@@ -22,45 +22,45 @@ Lastly, this is a flask app that was built for simplicity, but still has some ad
 
 ## Security Features Related to HIPAA / HITRUST covered:
 
-1. Role based access controls (RBAC) - prevents unauthorized access to PHI
+1. **Role based access controls (RBAC**) - prevents unauthorized access to PHI
     - With simple dedicated GUI for admin to manage roles-permissions, and users 
-2. 2-Factor Authentication - prevents unauthorized access to PHI
+2. **2-Factor Authentication** - prevents unauthorized access to PHI
     - Currently set to Google Authenticators
-3. Session Timeout - prevents unauthorized access to PHI
+3. **Session Timeout** - prevents unauthorized access to PHI
     - Currently set to 5 minutes
-4. Session Security:
+4. **Session Security**:
     - Session cookie is only allowed over HTTPS (SESSION_COOKIE_SECURE)
     - Session cookie is only allowed to be accessed by the server (SESSION_COOKIE_HTTPONLY)
     - Session cookie is only allowd by the server that set it (SESSION_COOKIE_SAMESITE)
-5. Minimum password length and complexity - prevents weak passwords
+5. **Minimum password length and complexity** - prevents weak passwords
     - Currently set to 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
-6. Account lockout - prevents brute force attacks
+6. **Account lockout** - prevents brute force attacks
     - Currently set to 5 attempts, lockout for `15 minutes`
-7. Login audit trail - tracks who is accessing PHI
+7. **Login audit trail** - tracks who is accessing PHI
     - Captures IP address, username, and timestamp
     - Currently part of `User` model table
-8. User activity audit trail - tracks what users are doing with PHI
+8. **User activity audit trail** - tracks what users are doing with PHI
     - Captures all endpoints accessed, method, and timestamp
     - Currently in datatable called `UserActivityLog`
-9. Password expiration - prevents unauthorized access to PHI 
+9. **Password expiration** - prevents unauthorized access to PHI 
     - Currently set to 90 days
-10. Overall application monitoring - 
+10. **Overall application monitoring** - 
     - Currently with Sentry.io
     - Have built in basic RegEx rules to reduce/prevent PHI (or PII) from being logged in Sentry
-11. Rotating API tokens - prevents unauthorized access to PHI
+11. **Rotating API tokens** - prevents unauthorized access to PHI
     - Currently set to 7 days
     - The config is found in the DB model: `APIToken`
-12. API limiting 
+12. **API limiting** 
     - Each end up currently has a set limit of 1 request per second
     - Can individually set limits for each endpoint
-13. Content Security Policy (CSP) - prevents XSS attacks
+13. **Content Security Policy (CSP)** - prevents XSS attacks
     - Currently set to `default-src 'self'` 
     - Can be modified in the `util/config/loader.py` file
-14. Pre-deploy checks 
+14. **Pre-deploy checks** 
     - `predeploy.codechecks.py` can be run before running the app to check for any potential issues: 
-        - **RUFF** for linting/code quality 
-        - **SAFETY** for security vulnerabilities in dependencies
-        - **BANDIT** for security vulnerabilities in the code
+        - *RUFF* for linting/code quality 
+        - *SAFETY* for security vulnerabilities in dependencies
+        - *BANDIT* for security vulnerabilities in the code
 15. .....and more coming soon
 
 ## Different Environments 
@@ -85,15 +85,30 @@ Currently has three different environments: 1. DEV, 2. PROD, 3. TEST. Each of th
     - 2 factor is on
 
 ## Quick start
+
+Next is a quick start guide for getting the app quickly running in the development environment. 
+
 ### Local: DEV:
 - Step 1: Inside the route folder of the project where the requirements.txt file is located
     - `python3 -m venv venv` or `python -m venv venv`
     - `source venv/bin/activate`
     - `pip install -r requirements.txt`
-- Step 2: Rename `.env.template` to `.env` file, set ENVIRONMENT to `DEV` 
+- Step 2: Rename `.env.template` to `.env` file, and:
+    - Set the ENVIRONMENT to `DEV` 
+    - Create a redis cloud account and get the URL for the redis server
+        - Add the redis URL to the `.env` file
+    - Create a sentry account and get the DSN key
+        - Add the sentry DSN key to the `.env` file
+    - Create a SECRET_KEY for the app
+        - Add the secret key to the `.env` file
+    - Either keep the SQLALCHEMY_DATABASE_URI as is, or change it to your preferred database
 - Step 3: If you want to change anything within the dev environment, open up `healthcare-template-app/configDev.yaml` and make your changes
 - Step 4: Change director to current working directory or CD into `healthcare-template-app` then run:
-    - `python3 init_db.py` or `python init_db.py` to initialize the database
+    - `python3 predeploy.init_db.py` or `predeploy.init_db.py` to initialize the database
+        - this is manditory to run before starting the app
+    - If you want to run some pre-deployment checks, run `python3 predeploy.codechecks.py` or `python predeploy.codechecks.py`
+        - This is not manditory, but recommended beforing deploying the app to a staging or production environmemnt 
+        - It will output suggested changes to add inside `predeploy_checks/outout` folder for you to review
     - `python3 app.py` or `python app.py` to start the app on `http:\\localhost:5005`
 
 ### Local: STAGING: 
