@@ -14,6 +14,8 @@
     <!-- Add another image here if you want a complete 2x2 grid -->
 </div>
 
+# What is it? 
+
 This is a Flask API Template that can be HIPAA / HITRUST compliant. It is for demonstration pursposes and learning, showcasing the flexibility of Flask. The template for this flask ask can be found in the `/healthcare-template-app` directory.
 
 I decided to make this repo to first help myself better understand how to implement common required security features for HIPAA / HITRUST compliance, and then second to help others who are looking to build and learn.
