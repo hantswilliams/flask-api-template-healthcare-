@@ -20,3 +20,5 @@ ruff
 colorama
 pyopenssl
 pymysql
+safety
+bandit

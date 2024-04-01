@@ -133,7 +133,7 @@ Currently has three different environments: 1. DEV, 2. PROD, 3. TEST. Each of th
 ## To do
 1) Update RUFF linting, currently commement out in `/healthcare-template-app/predeploy.codechecks.py` 
 2) Add in unit testing (pytest) to predeploy checks
-3) Need to go in add the security checks of dependencies (safety, bandit, etc)
+3) (partially done, added in safety) - Need to go in add the security checks of dependencies (safety, bandit, etc)
 
 ## HIPAA:
 
