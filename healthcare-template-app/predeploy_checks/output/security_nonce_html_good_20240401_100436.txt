@@ -1,0 +1,6 @@
+Files with script tags and nonce present:
+templates/base.html
+templates/apiTokens.html
+templates/login.html
+templates/redoc.html
+templates/permissions.html

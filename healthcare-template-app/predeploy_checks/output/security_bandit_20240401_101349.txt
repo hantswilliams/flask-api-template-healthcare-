@@ -1,4 +1,4 @@
-Run started:2024-04-01 13:23:17.397040
+Run started:2024-04-01 14:13:49.487755
 
 Test results:
 >> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
@@ -74,47 +74,77 @@ Test results:
    Severity: Low   Confidence: High
    CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
    More Info: https://bandit.readthedocs.io/en/1.7.8/blacklists/blacklist_imports.html#b404-import-subprocess
-   Location: ./predeploy.codechecks.py:7:0
-6	import fnmatch
-7	import subprocess
-8	from colorama import Fore, Style
+   Location: ./predeploy_checks/code/formatting_ruff.py:1:0
+1	import subprocess
+2	from colorama import Fore, Style
+3	from datetime import datetime
 
 --------------------------------------------------
 >> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
    Severity: Low   Confidence: High
    CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
    More Info: https://bandit.readthedocs.io/en/1.7.8/plugins/b603_subprocess_without_shell_equals_true.html
-   Location: ./predeploy.codechecks.py:185:13
-184	    # Execute the command
-185	    result = subprocess.run(command, cwd=parent_dir, capture_output=True, text=True)
-186	
+   Location: ./predeploy_checks/code/formatting_ruff.py:12:13
+11	    # Execute the command
+12	    result = subprocess.run(command, capture_output=True, text=True)
+13	
+
+--------------------------------------------------
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.7.8/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: ./predeploy_checks/code/security_bandit.py:2:0
+1	import os
+2	import subprocess
+3	from datetime import datetime
 
 --------------------------------------------------
 >> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
    Severity: Low   Confidence: High
    CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
    More Info: https://bandit.readthedocs.io/en/1.7.8/plugins/b603_subprocess_without_shell_equals_true.html
-   Location: ./predeploy.codechecks.py:230:13
-229	    # Execute the command in the parent directory
-230	    result = subprocess.run(command, cwd=parent_dir, capture_output=True, text=True)
-231	
+   Location: ./predeploy_checks/code/security_bandit.py:25:13
+24	    # Execute the command in the parent directory
+25	    result = subprocess.run(command, cwd=parent_dir, capture_output=True, text=True)
+26	
+
+--------------------------------------------------
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.7.8/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: ./predeploy_checks/code/security_dependencies.py:2:0
+1	import os
+2	import subprocess
+3	from datetime import datetime
+
+--------------------------------------------------
+>> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.7.8/plugins/b603_subprocess_without_shell_equals_true.html
+   Location: ./predeploy_checks/code/security_dependencies.py:31:13
+30	    # Execute the command
+31	    result = subprocess.run(command, cwd=parent_dir, capture_output=True, text=True)
+32	
 
 --------------------------------------------------
 
 Code scanned:
-	Total lines of code: 1251
+	Total lines of code: 1326
 	Total lines skipped (#nosec): 0
 	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
 
 Run metrics:
 	Total issues (by severity):
 		Undefined: 0
-		Low: 4
+		Low: 7
 		Medium: 3
 		High: 2
 	Total issues (by confidence):
 		Undefined: 0
 		Low: 0
 		Medium: 6
-		High: 3
+		High: 6
 Files skipped (0):
