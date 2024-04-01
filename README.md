@@ -89,6 +89,16 @@ Currently has three different environments: 1. DEV, 2. PROD, 3. TEST. Each of th
 Next is a quick start guide for getting the app quickly running in the development environment. 
 
 ### Local: DEV:
+
+<div>
+    <a href="https://www.loom.com/share/a92cf2e501fb44e9947da4c2cef1aac1">
+      <p>Flask API Healthcare Focus Template on Security (V1 Dev How to) - Watch Video</p>
+    </a>
+    <a href="https://www.loom.com/share/a92cf2e501fb44e9947da4c2cef1aac1">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/a92cf2e501fb44e9947da4c2cef1aac1-with-play.gif">
+    </a>
+</div>
+
 - Step 1: Inside the route folder of the project where the requirements.txt file is located
     - `python3 -m venv venv` or `python -m venv venv`
     - `source venv/bin/activate`
