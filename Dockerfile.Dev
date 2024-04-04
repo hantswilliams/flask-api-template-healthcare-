@@ -1,0 +1,30 @@
+##### PRODUCTION DOCKERFILE #####
+### Before running this Dockerfile, be sure to update the .ENV file 
+### with the correct values for the database connection string, as well
+### as the secret key for the Flask app.
+
+FROM python:3.11.6-alpine3.18
+
+RUN apk add --no-cache gcc musl-dev python3-dev libffi-dev openssl-dev cargo
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+WORKDIR /app/healthcare-template-app/
+
+RUN rm -f /app/healthcare-template-app/instance/app.db
+
+RUN python predeploy.init_db.py
+
+EXPOSE 5005
+
+CMD [ "python", "app.py" ]
+
+# Local testing of this PROD image: build command: docker build -t flaskhealth -f Dockerfile.Prod .
+# run command: docker run -p 5005:5005 flaskhealth
+# should then be able to see it on `http://localhost:5005` in the browser
