@@ -123,11 +123,13 @@ Next is a quick start guide for getting the app quickly running in the developme
     - Set the ENVIRONMENT to `DEV` 
     - Create a redis cloud account and get the URL for the redis server
         - Add the redis URL to the `.env` file
+        - Structure of the URI should include the redis username and password
     - Create a sentry account and get the DSN key
         - Add the sentry DSN key to the `.env` file
     - Create a SECRET_KEY for the app
         - Add the secret key to the `.env` file
     - Either keep the SQLALCHEMY_DATABASE_URI as is, or change it to your preferred database
+        - I use a local sqlite database in the dev enviornment 
 - Step 3: If you want to change anything within the dev environment, open up `healthcare-template-app/configDev.yaml` and make your changes
 - Step 4: Change director to current working directory or CD into `healthcare-template-app` then run:
     - `python3 predeploy.init_db.py` or `predeploy.init_db.py` to initialize the database
@@ -153,7 +155,8 @@ Next is a quick start guide for getting the app quickly running in the developme
 - Step 1: Recommend using docker for production and first testing in dev and staging environments 
 - Step 2: Rename `.env.template` to `.env` file, set ENVIRONMENT to `PROD`
 - Step 3: Update `BASE_URL` in `healthcare-template-app/configProd.yaml` to the correct URL of your production server
-- Step 4: Build the docker image, navigate in terminal to root folder of the project where `Dockerfile` is located and run: 
+    - You should already have the domain setup and ready to go, or if you are using a cloud provider, you can first deploy the app, then update the deployment and this file after the (likely) static domain is created for your
+- Step 4: Build the docker image, navigate in terminal to root folder of the project where `Dockerfile.Prod` is located and run: 
     - `docker buildx build --platform linux/amd64 -f Dockerfile.Prod -t flaskhealth .` 
     - `docker run -p 5005:5005 flaskhealth`
     - Make sure it works as expected
@@ -171,7 +174,19 @@ Next is a quick start guide for getting the app quickly running in the developme
         - Set the environment variables (copy from `.env` file)
         - Click `Create` and wait for the service to deploy
 
-
+### Remote: EC2/VM: with AWS or GCP: Using Docker Compose
+- Create a new EC2 instance or VM in AWS, GCP, or your preferred cloud provider
+- SSH into the instance
+- Install Docker and Docker Compose
+- Clone the repo into the instance
+- Rename `.env.template` to `.env` file, set ENVIRONMENT to `PROD` or `STAGING` or `DEV`
+- Update the `configProd.yaml` or `configStaging.yaml` or `configDev.yaml` file with the correct URL of your server
+- Run `docker-compose up -d` to start the app in the background
+- If you want to map your domain to the instances IP: (TO DO)
+    - Copy the IP address of the instance in your browser
+    - Make sure to open the correct ports in the security group or firewall settings 
+    - Make sure to have a domain name setup and pointing to the IP address of the instance 
+    - Make sure to have SSL certificates setup for the domain name 
 
 
 ---
