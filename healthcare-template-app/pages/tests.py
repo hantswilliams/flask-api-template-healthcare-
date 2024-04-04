@@ -7,7 +7,6 @@ from util.rate_limiting.rate_limiter import limiter
 # Create a Blueprint
 test_pages = Blueprint("test_pages", __name__)
 
-
 ## For a protected route, you can use the @login_required decorator
 @test_pages.route("/protected_route")
 @login_required

@@ -12,12 +12,15 @@ from flask_login import login_user, current_user
 from models.models import db, User
 import pyotp
 from util.auth.auth_audit import update_login_audit_info
+from util.rate_limiting.rate_limiter import limiter
 from werkzeug.security import check_password_hash
 
 login_pages = Blueprint("login_pages", __name__)
 
 
 @login_pages.route("/", methods=["GET", "POST"])
+@limiter.limit("5 per minute")
+# @limiter.exempt ## for testing purposes
 def login():
     ## determine if 2FA is required
     twoFactor = current_app.config.get("TWO_FACTOR_AUTH_REQUIRED", True)
