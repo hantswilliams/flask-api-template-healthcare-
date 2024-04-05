@@ -79,6 +79,7 @@ The app is designed to become HIPAA / HITRUST compliant, it is not currently, an
         - *BANDIT* for security vulnerabilities in the code
 15. .....and more coming soon
 
+
 ## Different Environments 
 Currently has three different environments: 1. DEV, 2. PROD, 3. TEST. Each of these environments has a different configuration file (configDev.yaml, configStaging.yaml, configProd.yaml). The `.env` file is used to determine which environment the app is in. Key differences: 
 
@@ -190,6 +191,11 @@ Next is a quick start guide for getting the app quickly running in the developme
 
 
 ---
+
+## Tutorial vids: 
+1. Getting started: https://www.loom.com/share/a92cf2e501fb44e9947da4c2cef1aac1?sid=29c6a303-7962-45b6-8431-e7ce8c3cae0a  
+2. Login, bruteforce, session timeout, limiter: https://www.loom.com/share/082fc0f43ecb4977babff6aa9bbb5302?sid=65e3276a-e528-4490-9701-aaff8527c486 
+
 
 ## To do
 1) Add in unit testing (pytest) to predeploy checks
