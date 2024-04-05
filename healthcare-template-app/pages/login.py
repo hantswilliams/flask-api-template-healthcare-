@@ -22,8 +22,11 @@ login_pages = Blueprint("login_pages", __name__)
 @limiter.limit("5 per minute")
 # @limiter.exempt ## for testing purposes
 def login():
-    ## determine if 2FA is required
+    ## determine if 2FA is required, get lockout duration, get password age
     twoFactor = current_app.config.get("TWO_FACTOR_AUTH_REQUIRED", True)
+    account_lockout_time = current_app.config.get("ACCOUNT_LOCKOUT_TIME_MINS", 15)
+    password_age_days = current_app.config.get("PASSWORD_AGE_RESET_DAYS", 90)
+
 
     if current_user.is_authenticated:
         return redirect(
@@ -47,7 +50,7 @@ def login():
         return jsonify(
             {
                 "success": False,
-                "message": "Account locked. Please try again later.",
+                "message": "Account locked. Please try again in " + str(account_lockout_time) + " minutes",
                 "remaining_attempts": 0,
             }
         )
@@ -57,14 +60,14 @@ def login():
     if user and check_password_hash(user.password, password):
         password_age = datetime.now() - user.password_changed_at
 
-        if password_age > timedelta(days=90):
+        if password_age > timedelta(days=password_age_days):
             login_user(user)
             return jsonify({
                 "success": True, 
                 "redirect": url_for("change_password")
                 })
 
-        elif password_age < timedelta(days=90) and not twoFactor:
+        elif password_age < timedelta(days=password_age_days) and not twoFactor:
             update_login_audit_info(user, request.remote_addr)
             user.failed_login_attempts = 0
             db.session.commit()
@@ -101,7 +104,7 @@ def login():
         if user:
             user.failed_login_attempts += 1
             if user.failed_login_attempts >= 5:
-                user.lockout_until = datetime.now() + timedelta(minutes=15)
+                user.lockout_until = datetime.now() + timedelta(minutes=account_lockout_time)
             db.session.commit()
             remaining_attempts = max(0, 5 - user.failed_login_attempts)
         return jsonify(

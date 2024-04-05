@@ -9,6 +9,7 @@ username = 'admin'
 
 # Path to the file containing the list of passwords to try
 password_file = 'passwords.txt'
+password_file = 'attacks/bruteforce/passwords.txt'
 
 # Headers to mimic a real browser request (optional)
 headers = {
